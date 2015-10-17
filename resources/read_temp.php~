@@ -27,5 +27,4 @@ while ($char !== false && $char !== "\n" && $char !== "\r") {
     $char = fgetc($f);
 }
 
-echo $line;
 ?>

@@ -1,7 +1,6 @@
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
- <meta http-equiv="refresh" content="5" />
 <link rel="stylesheet" href="/resources/css/style.css">
 <?php 
 if (isset($_POST['RedON']))
