@@ -1,3 +1,6 @@
+<head>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+</head>
 <?php
 
 ## Put todays date into a variable for later use...
@@ -83,3 +86,55 @@ $timea= implode(",", $time);
 ## We have two, human-readable, arrays of data that we can 
 ## now pass to our graph...
 ?>
+<body>
+<script src="charts/js/highcharts.js"></script>
+<script src="charts/js/modules/exporting.js"></script>
+<div id="container" style="width: 800px; height: 400px; margin: 0 auto"></div>
+</body>
+<script type="text/javascript">
+$(function () {
+        $('#container').highcharts({
+            chart: {
+                type: 'line',
+                marginRight: 130,
+                marginBottom: 25
+            },
+            title: {
+                text: 'Todays Temperature Chart',
+                x: -20 //center
+            },
+            subtitle: {
+                text: 'Source: My Raspberry Pi',
+                x: -20
+            },
+            xAxis: {
+                categories: [<?php echo $timea; ?>]
+            },
+            yAxis: {
+                title: {
+                    text: 'Temperature'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                valueSuffix: ''
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: -10,
+                y: 100,
+                borderWidth: 0
+            },
+            series: [{
+                name: 'Celcius',
+                data: [<?php echo $tempa; ?>]
+            }]
+        });
+    });
+</script>

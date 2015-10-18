@@ -87,7 +87,7 @@ exec("/usr/local/bin/tdtool -f 4");
 $line = '';
 
 $f = fopen('./resources/python/log.log', 'r');
-$cursor = -2;
+$cursor = -3;
 
 fseek($f, $cursor, SEEK_END);
 $char = fgetc($f);

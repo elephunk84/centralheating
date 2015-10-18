@@ -2,7 +2,8 @@
 import os
 import glob
 import time
-import time
+import sqlite3
+import datetime
 
 base_dir = '/sys/bus/w1/devices/'
 device_folder = glob.glob(base_dir + '28*')[0]
@@ -24,12 +25,13 @@ def read_temp():
          temp_string = lines[1][equals_pos+2:]
          temp_c = float(temp_string) / 1000.0
          temp_f = temp_c * 9.0 / 5.0 + 32.0
-         return temp_c
+         return temp_c, temp_f
 
 while True:
-    timestring = time.strftime("%Y-%m-%d %H:%M:%S")
-    f = open("log.log", "a")
-    f.write( "\n"+repr(read_temp()))
-    f.close()
-    time.sleep(1)
-
+    print(read_temp())
+    temp = read_temp()
+    conn=sqlite3.connect('templog.db')
+    curs=conn.cursor()
+    curs.execute("INSERT INTO temps values(datetime('now'), (?))", (temp,))
+    conn.commit()
+    conn.close()
