@@ -1,7 +1,7 @@
 <?php
 $line = '';
 
-$f = fopen('../log.log', 'r');
+$f = fopen('./python/log.log', 'r');
 $cursor = -1;
 
 fseek($f, $cursor, SEEK_END);
@@ -27,4 +27,5 @@ while ($char !== false && $char !== "\n" && $char !== "\r") {
     $char = fgetc($f);
 }
 
+echo $line;
 ?>

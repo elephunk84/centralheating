@@ -86,8 +86,8 @@ exec("/usr/local/bin/tdtool -f 4");
             <span><?php
 $line = '';
 
-$f = fopen('log.log', 'r');
-$cursor = -1;
+$f = fopen('./resources/python/log.log', 'r');
+$cursor = -2;
 
 fseek($f, $cursor, SEEK_END);
 $char = fgetc($f);
@@ -113,7 +113,7 @@ while ($char !== false && $char !== "\n" && $char !== "\r") {
 }
 
 echo $line;
-?></span><strong>&deg;c</strong>
+?></span>
               </div>
             </div>
           </div>

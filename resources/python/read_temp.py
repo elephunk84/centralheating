@@ -2,6 +2,7 @@
 import os
 import glob
 import time
+import time
 
 base_dir = '/sys/bus/w1/devices/'
 device_folder = glob.glob(base_dir + '28*')[0]
@@ -26,8 +27,9 @@ def read_temp():
          return temp_c
 
 while True:
+    timestring = time.strftime("%Y-%m-%d %H:%M:%S")
     f = open("log.log", "a")
-    f.write( "\n"+repr(read_temp()) )
+    f.write( "\n"+repr(read_temp())+ ' ' +str(timestring))
     f.close()
     time.sleep(1)
-    print(read_temp())
+
