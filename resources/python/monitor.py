@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 
 import sqlite3
-import pytz
 import os
 import time
 import glob
 import socket
 import datetime
-import tzlocal
 
 speriod=(15*60)-1
 hostname=socket.gethostname()
