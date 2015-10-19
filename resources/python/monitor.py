@@ -1,49 +1,39 @@
 #!/usr/bin/env python
 
 import sqlite3
-
+import pytz
 import os
 import time
 import glob
 import socket
+import datetime
+import tzlocal
 
-hostname=socket.gethostname()
-
-# global variables
 speriod=(15*60)-1
+hostname=socket.gethostname()
 dbname='/home/pi/GitRepo/centralheating/resources/python/templog_' + str(hostname) + '.db'
 
+def localtime():
+    time_now=time.ctime()
+    return time_now
 
-
-# store the temperature in the database
-def log_temperature(temp):
-
+def log_temperature(temperature):
+    time_now=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
+    print time_now
     conn=sqlite3.connect(dbname)
     curs=conn.cursor()
-
-    curs.execute("INSERT INTO temps values(datetime('now'), (?))", (temp,))
-
-    # commit the changes
+    curs.execute("INSERT INTO temps values (?, ?);",  (time_now, temperature) )
     conn.commit()
-
     conn.close()
 
-
-# display the contents of the database
 def display_data():
 
     conn=sqlite3.connect(dbname)
     curs=conn.cursor()
-
     for row in curs.execute("SELECT * FROM temps"):
         print str(row[0])+"	"+str(row[1])
-
     conn.close()
 
-
-
-# get temerature
-# returns None on error, or the temperature as a float
 def get_temp(devicefile):
 
     try:
@@ -52,28 +42,20 @@ def get_temp(devicefile):
         fileobj.close()
     except:
         return None
-
-    # get the status from the end of line 1 
     status = lines[0][-4:-1]
-
-    # is the status is ok, get the temperature from line 2
     if status=="YES":
-        print status
         tempstr= lines[1][-6:-1]
         tempvalue=float(tempstr)/1000
         print tempvalue
-        return tempvalue
+        temperature=tempvalue
+        log_temperature(temperature)
+        time.sleep(3)
+            
     else:
         print "There was an error."
         return None
 
-
-
-# main function
-# This is where the program starts 
 def main():
-    os.system('sudo modprobe w1-gpio')
-    os.system('sudo modprobe w1-therm')
     devicelist = glob.glob('/sys/bus/w1/devices/28*')
     if devicelist=='':
         return None
@@ -84,12 +66,7 @@ def main():
         if temperature != None:
             print "temperature="+str(temperature)
         else:
-            temperature = get_temp(w1devicefile)
-            print "temperature="+str(temperature)
-        log_temperature(temperature)
-        display_data()
-        time.sleep(10)
-
+            get_temp(w1devicefile)
 
 if __name__=="__main__":
     main()
