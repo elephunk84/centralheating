@@ -8,7 +8,7 @@ import cgitb
 
 # global variables
 speriod=(15*60)-1
-dbname='templog.db'
+dbname='/home/pi/GitRepo/centralheating/resources/python/templog_raspi-6.db'
 
 
 
@@ -38,13 +38,7 @@ def get_data(interval):
 
     conn=sqlite3.connect(dbname)
     curs=conn.cursor()
-
-    if interval == None:
-        curs.execute("SELECT * FROM temps")
-    else:
-#        curs.execute("SELECT * FROM temps WHERE timestamp>datetime('now','-%s hours')" % interval)
-        curs.execute("SELECT * FROM temps WHERE timestamp>datetime('2013-09-19 21:30:02','-%s hours') AND timestamp<=datetime('2013-09-19 21:31:02')" % interval)
-
+    curs.execute("SELECT * FROM temps")
     rows=curs.fetchall()
 
     conn.close()
