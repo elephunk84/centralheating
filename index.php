@@ -8,6 +8,7 @@
 </head>
 
   <body>
+<div id="wrap">
 <?php
 try
   {
@@ -15,7 +16,7 @@ try
     $db = new PDO('sqlite:/home/pi/GitRepo/centralheating/resources/python/templog_raspi-5.db');
 
     //now output the data to a simple html table...
-    print "<table border=1>";
+    print "<table class=\"table_on_the_left\"border=1>";
     print "<tr><td>Living Room</td><td>Temp</td>";
     $result = $db->query('SELECT * FROM temps ORDER BY ROWID DESC LIMIT 1;');
     foreach($result as $row)
@@ -26,7 +27,6 @@ try
       print "<td>".$row['temp']."</td>";
     }
     print "</table>";
-
     // close the database connection
     $db = NULL;
   }
@@ -40,7 +40,7 @@ try
     $db = new PDO('sqlite:/home/pi/GitRepo/centralheating/resources/python/templog_raspi-6.db');
 
     //now output the data to a simple html table...
-    print "<table border=1>";
+    print "<table border=1 class=\"table_on_the_right\">";
     print "<tr><td>Bedroom</td><td>Temp</td>";
     $result = $db->query('SELECT * FROM temps ORDER BY ROWID DESC LIMIT 1;');
     foreach($result as $row)
@@ -51,7 +51,6 @@ try
       print "<td>".$row['temp']."</td>";
     }
     print "</table>";
-
     // close the database connection
     $db = NULL;
   }
@@ -60,7 +59,6 @@ try
     print 'Exception : '.$e->getMessage();
   }
 ?>
-
-
+</div>
   </body>
 </html>

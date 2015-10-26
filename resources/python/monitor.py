@@ -44,31 +44,21 @@ def get_temp(devicefile):
     if status=="YES":
         tempstr= lines[1][-6:-1]
         tempvalue=float(tempstr)/1000
-        print tempvalue
+        global temperature
         temperature=tempvalue
+        print temperature
         log_temperature(temperature)
-        time.sleep(3)
-            
     else:
         print "There was an error."
         return None
 
-def main():
+def monitor():
     devicelist = glob.glob('/sys/bus/w1/devices/28*')
-    if devicelist=='':
-        return None
+    w1devicefile = devicelist[0] + '/w1_slave'
+    temperature = get_temp(w1devicefile)
+    if temperature != None:
+        print "temperature="+str(temperature)
     else:
-        w1devicefile = devicelist[0] + '/w1_slave'
-    while True:
-        temperature = get_temp(w1devicefile)
-        if temperature != None:
-            print "temperature="+str(temperature)
-        else:
-            get_temp(w1devicefile)
-
-if __name__=="__main__":
-    main()
-
-
+        get_temp(w1devicefile)
 
 
