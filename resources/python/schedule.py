@@ -1,45 +1,125 @@
 #!/usr/bin/python
+import json
+import datetime
+import sys
+import os
+now = datetime.datetime.now()
+Monday = {
+                '1': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '2': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '3': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '4': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '5': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '6': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '7': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '8': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '9': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}}
+          } 
+Tuesday = {
+                '1': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '2': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '3': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '4': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '5': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '6': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '7': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '8': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '9': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}}
+           } 
+Wednesday = {
+                '1': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '2': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '3': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '4': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '5': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '6': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '7': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '8': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '9': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}}
+          } 
+Thursday = {
+                '1': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '2': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '3': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '4': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '5': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '6': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '7': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '8': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '9': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}}
+          } 
+Friday = {
+                '1': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '2': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '3': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '4': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '5': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '6': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '7': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '8': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '9': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}}
+          } 
+Saturday = {
+                '1': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '2': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '3': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '4': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '5': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '6': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '7': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '8': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '9': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}}
+          } 
+Sunday = {
+                '1': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '2': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '3': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '4': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '5': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '6': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '7': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '8': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}},
+                '9': {'On': {'hour': '07', 'minute': '00'}, 'Off': {'hour': '07', 'minute': '45'}}
+          } 
+Week = {
+                'Monday' : json.dumps(Monday),
+                'Tuesday' : json.dumps(Tuesday),
+                'Wednesday' : json.dumps(Wednesday),
+                'Thursday' : json.dumps(Thursday),
+                'Friday' : json.dumps(Friday),
+                'Saturday' : json.dumps(Saturday),
+                'Sunday' : json.dumps(Sunday)
 
-#This is where you can set up your own scheduled by providing hour and minute when you want to start your task and duration where you say how long do you want to run it for. This is devided by each day of the week so you can run differen scheduler each day. It is possible to extend this with another column for example task and this way it can run different tasks for each setting.
+       }
 
-week={
+def dumpclean(obj):
+    if isinstance(obj, dict):
+        for k, v in sorted(obj.items()):
+            print u'{0}: {1}'.format(k, v)
 
-       'Monday':[{'hour': 10, 'minute': 19, 'duration': 460},
-                 {'hour': 12, 'minute': 20, 'duration': 2},
-                 {'hour': 18, 'minute': 0, 'duration': 362},
-                 {'hour': 20, 'minute': 30, 'duration': 20},
-                ],
+    else:
+        print obj
 
-       'Tuesday':[{'hour': 8, 'minute': 6, 'duration': 360},
-                  {'hour': 12, 'minute': 20, 'duration': 2},
-                  {'hour': 15, 'minute': 6, 'duration': 2},
-                  {'hour': 21, 'minute': 38, 'duration': 360},
-                 ],
+def print_day():
+    today=now.strftime("%A")
+    dump=today
+    print dump
+    if dump == "Monday":
+        global timer
+        timer = dumpclean(Monday)
+        return timer
+    elif dump == "Tuesday":
+        dumpclean(Tuesday)
+    elif dump == "Wednesday":
+        dumpclean(Wednesday)
+    elif dump == "Thursday":
+        dumpclean(Thursday)
+    elif dump == "Friday":
+        dumpclean(Friday)
+    elif dump == "Saturday":
+        dumpclean(Saturday)
+    elif dump == "Sunday":
+        dumpclean(Sunday)
+    else:
+        dumpclean(Week)
 
-       'Wednesday':[{'hour': 10, 'minute': 56, 'duration': 360},
-                    {'hour': 15, 'minute': 30, 'duration': 360},
-                   ],
-
-       'Thursday':[{'hour': 8, 'minute': 30, 'duration': 360},
-                   {'hour': 12, 'minute': 20, 'duration': 2},
-                   {'hour': 15, 'minute': 20, 'duration': 2},
-                   {'hour': 22, 'minute': 18, 'duration': 320},
-                   {'hour': 23, 'minute': 14, 'duration': 1},
-                  ],
-
-	'Friday':[{'hour': 6, 'minute': 20, 'duration': 360},
-                  {'hour': 9, 'minute': 10, 'duration': 362},
-                  {'hour': 16, 'minute': 35, 'duration': 360},
-		  {'hour': 23, 'minute': 55, 'duration': 1},
-                 ],
-
-	'Saturday':[{'hour': 11, 'minute': 44, 'duration': 1},
-		    {'hour': 12, 'minute': 3, 'duration': 2},
-                    {'hour': 12, 'minute': 8, 'duration': 2},
-                    {'hour': 15, 'minute': 53, 'duration': 461},
-                   ],
-
-	'Sunday':[{'hour': 7, 'minute': 58, 'duration': 550},
-                  {'hour': 20, 'minute': 30, 'duration': 520},
-                 ]
-}

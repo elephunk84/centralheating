@@ -5,6 +5,7 @@ import sys
 lib_path = os.path.abspath(os.path.join('/home/pi/GitRepo/centralheating/', 'lib'))
 sys.path.append(lib_path)
 
+
 import time
 import datetime
 import pytz
@@ -14,12 +15,15 @@ import socket
 from resources.python import monitor
 import wiringpi2 as wiringpi
 from resources.python.schedule import *
+import resources.python.schedule as schedule
 wiringpi.wiringPiSetup()
-wiringpi.pinMode(0, 1) # sets GPIO 25 to input
-wiringpi.pinMode(2, 1) # sets GPIO 24 to output
-
+wiringpi.pinMode(0, 1)
+wiringpi.pinMode(2, 1)
 hostname=socket.gethostname()
 dbname='/home/pi/GitRepo/centralheating/resources/python/templog_' + str(hostname) + '.db'
+
+temp_max=25
+temp_min=20
 
 def localtime():
     time_now=time.ctime()
@@ -37,39 +41,9 @@ def log_temperature(temperature):
 def display_data():
     conn=sqlite3.connect(dbname)
     curs=conn.cursor()
-    for row in curs.execute("SELECT * FROM temps"):
+    for row in curs.execute("SELECT * FROM temps ORDER BY ROWID DESC LIMIT 10;"):
         print str(row[0])+"	"+str(row[1])
     conn.close()
-
-def get_temp(devicefile):
-    try:
-        fileobj = open(devicefile,'r')
-        lines = fileobj.readlines()
-        fileobj.close()
-    except:
-        return None
-    status = lines[0][-4:-1]
-    if status=="YES":
-        tempstr= lines[1][-6:-1]
-        tempvalue=float(tempstr)/1000
-        global temperature
-        temperature=tempvalue
-        print temperature
-        log_temperature(temperature)
-        time.sleep(10)
-        return    
-    else:
-        print "There was an error."
-        return None
-
-def monitor():
-    devicelist = glob.glob('/sys/bus/w1/devices/28*')
-    w1devicefile = devicelist[0] + '/w1_slave'
-    temperature = get_temp(w1devicefile)
-    if temperature != None:
-        print "temperature="+str(temperature)
-    else:
-        get_temp(w1devicefile)
 
 def read_db():
     conn=sqlite3.connect(dbname)
@@ -80,8 +54,19 @@ def read_db():
 
 def control():
     while True:
-        monitor()
-        if (temperature >= 22) and (temperature <=25):
+        devicelist = glob.glob('/sys/bus/w1/devices/28*')
+        w1devicefile = devicelist[0] + '/w1_slave'
+        fileobj = open(w1devicefile,'r')
+        lines = fileobj.readlines()
+        fileobj.close()
+        tempstr= lines[1][-6:-1]
+        tempvalue=float(tempstr)/1000
+        temperature=tempvalue
+        print temperature
+        log_temperature(temperature)
+        print timer
+        time.sleep(10)
+        if (temperature >= temp_min) and (temperature <= temp_max):
             wiringpi.digitalWrite(0, 1)
             wiringpi.digitalWrite(2, 0)
         else:
