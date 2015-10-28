@@ -11,5 +11,11 @@ def perdelta(start, end, delta):
         yield curr
         curr += delta
 
-for results in perdelta(datetime.time(ch_on), datetime.time(ch_off), timedelta(minutes=1)):
-    print results 
+def remove_date():
+    runtime=[x.split(' ')[-2] for x in run_time]
+
+for results in perdelta((ch_on), (ch_off), timedelta(minutes=1)):
+    run_time=results
+    #remove_date()
+    print run_time
+
