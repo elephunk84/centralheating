@@ -5,16 +5,16 @@ import sys
 lib_path = os.path.abspath(os.path.join('/home/pi/GitRepo/centralheating/', 'lib'))
 sys.path.append(lib_path)
 
+import __builtin__
 import time
 import datetime
-import pytz
 import sqlite3
 import glob
 import socket
 from resources.python import monitor
 import wiringpi2 as wiringpi
-from resources.python.schedule import *
 import resources.python.schedule as schedule
+from resources.python.schedule import *
 wiringpi.wiringPiSetup()
 wiringpi.pinMode(0, 1)
 wiringpi.pinMode(2, 1)
@@ -26,6 +26,7 @@ today=now.strftime("%A")
 time_now=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
 temp_max=25
 temp_min=20
+__builtin__.status=""
 
 def log_temperature(temp):
     conn=sqlite3.connect(dbname)
@@ -64,16 +65,19 @@ def control():
         tempvalue=float(tempstr)/1000
         temp=tempvalue
         temp1=temp
-        print temp
+        print "Current Temperature is...."
+        print  temp
         log_temperature(temp)
-        print_day()
-        if (temp >= temp_min) and (temp <= temp_max):
-            wiringpi.digitalWrite(0, 1)
-            wiringpi.digitalWrite(2, 0)
-            time.sleep(30)
-        else:
+        set_day()
+        if (temp <= temp_min) and (__builtin__.status == "ON"):
             wiringpi.digitalWrite(0, 0)
             wiringpi.digitalWrite(2, 1)
+            print "Central Heating Running...."
+            time.sleep(30)
+        else:
+            wiringpi.digitalWrite(0, 1)
+            wiringpi.digitalWrite(2, 0)
+            print "Cental Heating Off...."
             time.sleep(30)
 
 

@@ -1,365 +1,160 @@
 #!/usr/bin/python
 import json
-#This is where you can set up your own scheduled by providing hour and minute when you want to start your task and duration where you say how long do you want to run it for. This is devided by each day of the week so you can run differen scheduler each day. It is possible to extend this with another column for example task and this way it can run different tasks for each setting.
+import datetime
+import sys
+from pprint import pprint
+import os
+import copy
+global now
+now = datetime.datetime.now()
+global today
+today=now.strftime("%A")
+global hour
+hour=now.strftime("%H")
+global minute
+minute=now.strftime("%M")
+global timer
+timer=""
+Monday = [
+          [1, ["04:00"], ["05:15"]],
+          [2, ["07:00"], ["08:15"]],
+          [3, ["00:00"], ["00:15"]],
+          [4, ["00:00"], ["00:15"]],
+          [5, ["10:00"], ["11:00"]],
+          [6, ["00:00"], ["00:00"]],
+          [7, ["14:00"], ["15:15"]],
+          [8, ["17:00"], ["20:00"]],
+          [9, ["22:00"], ["11:30"]],
+          [0, ["00:00"], ["00:00"]]
 
-Week={
+          ]  
+Tuesday = [
+          [1, ["04:00"], ["05:15"]],
+          [2, ["07:00"], ["08:15"]],
+          [3, ["00:00"], ["00:15"]],
+          [4, ["00:00"], ["00:15"]],
+          [5, ["10:00"], ["11:00"]],
+          [6, ["00:00"], ["00:00"]],
+          [7, ["14:00"], ["15:15"]],
+          [8, ["17:00"], ["20:00"]],
+          [9, ["22:00"], ["11:30"]],
+          [0, ["00:00"], ["00:00"]]
 
-       'Monday':[{
-                  '1':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      },
-                  '2':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '3':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '4':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '5':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '6':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '7':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '8':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '9':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '10':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-       'Tuesday':[{
-                  '1':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '2':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '3':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '4':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '5':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '6':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '7':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '8':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '9':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '10':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-       'Wednesday':[{
-                  '1':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '2':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '3':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '4':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '5':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '6':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '7':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '8':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '9':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '10':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-       'Thursday':[{
-                  '1':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '2':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '3':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '4':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '5':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '6':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '7':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '8':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '9':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '10':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-       'Friday':[{
-                  '1':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '2':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '3':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '4':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '5':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '6':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '7':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '8':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '9':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '10':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-       'Saturday':[{
-                  '1':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '2':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '3':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '4':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '5':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '6':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '7':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '8':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '9':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '10':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-       'Sunday':[{
-                  '1':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '2':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '3':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '4':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '5':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '6':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '7':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '8':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '9':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-                  '10':[{
-                       'On':[{'hour': 10, 'minute': 19}], {
-                       'Off':[{'hour': 11, 'minute': 30}]
-                      }]
-                }],
-}
+          ]  
+Wednesday = [
+          [1, "04:00", "05:15"],
+          [2, "07:00", "08:15"],
+          [3, "00:00", "00:15"],
+          [4, "14:53", "00:15"],
+          [5, "14:52", "11:42"],
+          [6, "14:57", "00:00"],
+          [7, "14:50", "15:15"],
+          [8, "14:55", "20:00"],
+          [9, "14:56", "11:30"],
+          [0, "19:00", "00:00"]
 
-print json.dumps(Week)
+          ]  
+Thursday = [
+          [1, ["04:00"], ["05:15"]],
+          [2, ["07:00"], ["08:15"]],
+          [3, ["00:00"], ["00:15"]],
+          [4, ["00:00"], ["00:15"]],
+          [5, ["10:00"], ["11:00"]],
+          [6, ["00:00"], ["00:00"]],
+          [7, ["14:00"], ["15:15"]],
+          [8, ["17:00"], ["20:00"]],
+          [9, ["22:00"], ["11:30"]],
+          [0, ["00:00"], ["00:00"]]
+
+          ]  
+Friday = [
+          [1, ["04:00"], ["05:15"]],
+          [2, ["07:00"], ["08:15"]],
+          [3, ["00:00"], ["00:15"]],
+          [4, ["00:00"], ["00:15"]],
+          [5, ["10:00"], ["11:00"]],
+          [6, ["00:00"], ["00:00"]],
+          [7, ["14:00"], ["15:15"]],
+          [8, ["17:00"], ["20:00"]],
+          [9, ["22:00"], ["11:30"]],
+          [0, ["00:00"], ["00:00"]]
+
+          ]  
+Saturday = [
+          [1, ["04:00"], ["05:15"]],
+          [2, ["07:00"], ["08:15"]],
+          [3, ["00:00"], ["00:15"]],
+          [4, ["00:00"], ["00:15"]],
+          [5, ["10:00"], ["11:00"]],
+          [6, ["00:00"], ["00:00"]],
+          [7, ["14:00"], ["15:15"]],
+          [8, ["17:00"], ["20:00"]],
+          [9, ["22:00"], ["11:30"]],
+          [0, ["00:00"], ["00:00"]]
+
+          ]  
+Sunday = [
+          [1, ["04:00"], ["05:15"]],
+          [2, ["07:00"], ["08:15"]],
+          [3, ["00:00"], ["00:15"]],
+          [4, ["00:00"], ["00:15"]],
+          [5, ["10:00"], ["11:00"]],
+          [6, ["00:00"], ["00:00"]],
+          [7, ["14:00"], ["15:15"]],
+          [8, ["17:00"], ["20:00"]],
+          [9, ["22:00"], ["11:30"]],
+          [0, ["00:00"], ["00:00"]]
+
+          ]  
+
+def set_day():
+    global timer
+    if today == "Monday":
+        timer=list(Monday)
+        run_timer()
+    elif today == "Tuesday":
+        timer=list(Tuesday)
+        run_timer()
+    elif today == "Wednesday":
+        timer=list(Wednesday)
+        run_timer()
+    elif today == "Thursday":
+        timer=list(Thursday)
+        run_timer()
+    elif today == "Friday":
+        timer=list(Friday)
+        run_timer()
+    elif today == "Saturday":
+        timer=list(Saturday)
+        run_timer()
+    elif today == "Sunday":
+        timer=list(Sunday)
+        run_timer()
+    else:
+        dumpclean(Week)
+
+def run_timer():
+    timenow=hour + ":" + minute
+    print "Time now is.....\n" +  today, timenow
+    print timenow
+    for sublist in timer:
+        print sublist[1]
+#        if str(timenow) == sublist[1]:
+#            status=ON
+#            print "Status: ON"
+#        elif str(timenow) == sublist[2]:
+#            status=OFF
+#            print "Status: OFF"
+#        else:
+#            print "No Status Change"
+#            return"""
+
+def print_timer():
+    for n in timer:
+        print n
+    print timer[3]
+    
+        
+
+if __name__ == "__main__":
+    set_day()
