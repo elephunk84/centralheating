@@ -5,7 +5,6 @@ import sys
 lib_path = os.path.abspath(os.path.join('/home/pi/GitRepo/centralheating/', 'lib'))
 sys.path.append(lib_path)
 
-
 import time
 import datetime
 import pytz
@@ -20,23 +19,25 @@ wiringpi.wiringPiSetup()
 wiringpi.pinMode(0, 1)
 wiringpi.pinMode(2, 1)
 hostname=socket.gethostname()
+maindb='/home/pi/GitRepo/centralheating/resources/python/templog.db'
 dbname='/home/pi/GitRepo/centralheating/resources/python/templog_' + str(hostname) + '.db'
-
+now=datetime.datetime.now()
+today=now.strftime("%A")
+time_now=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
 temp_max=25
 temp_min=20
 
-def localtime():
-    time_now=time.ctime()
-    return time_now
-
-def log_temperature(temperature):
-    time_now=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
-    print time_now
+def log_temperature(temp):
     conn=sqlite3.connect(dbname)
     curs=conn.cursor()
-    curs.execute("INSERT INTO temps values (?, ?);",  (time_now, temperature) )
+    curs.execute("INSERT INTO temps values (?, ?);",  (time_now, temp) )
     conn.commit()
     conn.close()
+
+def templog(temp1, temp2):
+    conn=sqlite.connect(maindb)
+    curs=conn.cursor()
+    curs.execute()    
 
 def display_data():
     conn=sqlite3.connect(dbname)
@@ -61,17 +62,19 @@ def control():
         fileobj.close()
         tempstr= lines[1][-6:-1]
         tempvalue=float(tempstr)/1000
-        temperature=tempvalue
-        print temperature
-        log_temperature(temperature)
-        print timer
-        time.sleep(10)
-        if (temperature >= temp_min) and (temperature <= temp_max):
+        temp=tempvalue
+        temp1=temp
+        print temp
+        log_temperature(temp)
+        print_day()
+        if (temp >= temp_min) and (temp <= temp_max):
             wiringpi.digitalWrite(0, 1)
             wiringpi.digitalWrite(2, 0)
+            time.sleep(30)
         else:
             wiringpi.digitalWrite(0, 0)
             wiringpi.digitalWrite(2, 1)
+            time.sleep(30)
 
 
 if __name__ == "__main__":
