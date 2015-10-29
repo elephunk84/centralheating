@@ -23,7 +23,7 @@ maindb='/home/pi/GitRepo/centralheating/resources/python/templog.db'
 dbname='/home/pi/GitRepo/centralheating/resources/python/templog_' + str(hostname) + '.db'
 now=datetime.datetime.now()
 today=now.strftime("%A")
-time_now=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
+time_now=time.strftime("%H:%M", time.localtime(time.time()))
 temp_max=25
 temp_min=20
 __builtin__.status="ON"
@@ -55,31 +55,33 @@ def read_db():
     temperature=curs.fetchone()
 
 def control():
-    while True:
-        devicelist = glob.glob('/sys/bus/w1/devices/28*')
-        w1devicefile = devicelist[0] + '/w1_slave'
-        fileobj = open(w1devicefile,'r')
-        lines = fileobj.readlines()
-        fileobj.close()
-        tempstr= lines[1][-6:-1]
-        tempvalue=float(tempstr)/1000
-        temp=tempvalue
-        temp1=temp
-        print "Current Temperature is...."
-        print  temp
-        log_temperature(temp)
-        set_day()
-        if (temp <= temp_min) and (__builtin__.status == "ON"):
-            wiringpi.digitalWrite(0, 0)
-            wiringpi.digitalWrite(2, 1)
-            print "Central Heating Running...."
-            time.sleep(30)
-        else:
-            wiringpi.digitalWrite(0, 1)
-            wiringpi.digitalWrite(2, 0)
-            print "Cental Heating Off...."
-            time.sleep(30)
+    devicelist = glob.glob('/sys/bus/w1/devices/28*')
+    w1devicefile = devicelist[0] + '/w1_slave'
+    fileobj = open(w1devicefile,'r')
+    lines = fileobj.readlines()
+    fileobj.close()
+    tempstr= lines[1][-6:-1]
+    tempvalue=float(tempstr)/1000
+    temp=tempvalue
+    temp1=temp
+    print "Current Temperature is...."
+    print  temp
+    log_temperature(temp)
+    set_day()
+    timenow = None
+    if (temp <= temp_min) and (time_now in open('run_schedule').read()):
+        wiringpi.digitalWrite(0, 0)
+        wiringpi.digitalWrite(2, 1)
+        print "Central Heating Running...."
+        print "--------------------------------------"
+    else:
+        wiringpi.digitalWrite(0, 1)
+        wiringpi.digitalWrite(2, 0)
+        print "Cental Heating Off...."
+        print "--------------------------------------"
 
 
 if __name__ == "__main__":
-    control()
+    while True:
+        control()
+        time.sleep(30)
