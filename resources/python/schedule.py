@@ -136,11 +136,11 @@ def set_day():
         dumpclean(Week)
 
 def run_timer():
+    now = datetime.datetime.now()
     global timenow
     timenow=now.strftime("%H:%M")
     print "Time now is.....\n" +  today, timenow
     firstline = open("run_schedule").readline().rstrip()
-    print firstline
     for sublist in timer:
         if sublist[1] == timenow:
             chon=sublist[1]

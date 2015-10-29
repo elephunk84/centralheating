@@ -68,7 +68,6 @@ def control():
     print  temp
     log_temperature(temp)
     set_day()
-    timenow = None
     if (temp <= temp_min) and (time_now in open('run_schedule').read()):
         wiringpi.digitalWrite(0, 0)
         wiringpi.digitalWrite(2, 1)
