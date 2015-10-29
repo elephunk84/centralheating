@@ -2,6 +2,7 @@
 import json
 import datetime
 import sys
+import timefiller as timefiller
 import __builtin__
 from pprint import pprint
 import os
@@ -37,7 +38,7 @@ Tuesday = [
           [5, "15:40", "11:42"],
           [6, "15:41", "00:00"],
           [7, "15:24", "15:15"],
-          [8, "15:25", "20:00"],
+          [8, "22:00", "23:30"],
           [9, "15:26", "11:30"],
           [0, "15:27", "00:00"]
 
@@ -140,21 +141,21 @@ def run_timer(mylist):
     global status
     global on
     global off
-    on_times=[i[1] for i in timer]
-    off=[i[2] for i in timer]
-    if timenow in on_times:
-        __builtin__.status="ON"
-    elif timenow in off:
-        __builtin__.status="OFF"
-    else:
-        print "No Status Change"
+    print timer
+    search = timenow
+    print timenow
+    for sublist in timer:
+        if sublist[1] == search:
+            __builtin__.status="ON"
+            print "Status: ON"
+        else:
+            __builtin__.status="OFF"
 
 def print_timer():
     for n in timer:
         print n
     print timer[3]
-    
-        
 
 if __name__ == "__main__":
     set_day()
+    print [item for row in timer for item in row]
