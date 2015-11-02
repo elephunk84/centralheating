@@ -27,6 +27,8 @@ time_now=time.strftime("%H:%M", time.localtime(time.time()))
 temp_max=25
 temp_min=20
 __builtin__.status="ON"
+ch_on=""
+ch_off=""
 
 def log_temperature(temp):
     conn=sqlite3.connect(dbname)
