@@ -13,7 +13,7 @@
 try
   {
     //open the database
-    $db = new PDO('sqlite:/home/pi/GitRepo/centralheating/resources/python/templog_raspi-5.db');
+    $db = new PDO('sqlite3:/home/pi/GitRepo/centralheating/resources/python/templog_raspi-5.db');
 
     //now output the data to a simple html table...
     print "<table class=\"table_on_the_left\"border=1>";
