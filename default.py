@@ -1,7 +1,7 @@
 #!/bin/python
 import os
 import sys
-
+import subprocess
 lib_path = os.path.abspath(os.path.join('/home/pi/GitRepo/centralheating/', 'lib'))
 sys.path.append(lib_path)
 
@@ -92,11 +92,13 @@ def control():
     if ch_status == 'ON':
         wiringpi.digitalWrite(0, 0)
         wiringpi.digitalWrite(2, 1)
+        subprocess.call(["ssh", "pi@192.168.0.129", "sh /home/pi/on.sh"])
         print "Central Heating " + ch_status + "...."
         print "--------------------------------------"
     elif ch_status == 'OFF':
         wiringpi.digitalWrite(0, 1)
         wiringpi.digitalWrite(2, 0)
+        subprocess.call(["ssh", "pi@192.168.0.129", "sh /home/pi/off.sh"])
         print "Cental Heating " + ch_status + "...."
         print "--------------------------------------"
 
