@@ -11,14 +11,15 @@ import datetime
 import sqlite3
 import glob
 import socket
-from resources.python import monitor
 import wiringpi2 as wiringpi
 import RPi.GPIO as GPIO
+from resources.python import monitor
 import resources.python.schedule as schedule
 from resources.python.schedule import *
 wiringpi.wiringPiSetup()
 wiringpi.pinMode(0, 1)
 wiringpi.pinMode(2, 1)
+GPIO.setmode(GPIO.BCM)
 GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 hostname=socket.gethostname()
 maindb='/home/pi/GitRepo/centralheating/resources/python/templog.db'
@@ -28,9 +29,8 @@ today=now.strftime("%A")
 time_now=time.strftime("%H:%M", time.localtime(time.time()))
 temp_max=25
 temp_min=20
-__builtin__.status="ON"
-ch_on=""
-ch_off=""
+__builtin__.callback = ''
+ch_status='OFF'
 
 def log_temperature(temp):
     conn=sqlite3.connect(dbname)
@@ -58,7 +58,16 @@ def read_db():
     conn.commit()
     temperature=curs.fetchone()
 
+def my_callback(channel):
+    if ch_status == 'OFF':
+        __builtin__.callback='ON'
+    elif ch_status == 'ON':
+        __builtin__.callback='OFF'
+    else:
+        pass
+
 def control():
+    global ch_status
     devicelist = glob.glob('/sys/bus/w1/devices/28*')
     w1devicefile = devicelist[0] + '/w1_slave'
     fileobj = open(w1devicefile,'r')
@@ -69,22 +78,31 @@ def control():
     temp=tempvalue
     temp1=temp
     print "Current Temperature is...."
-    print  temp
+    print temp
     log_temperature(temp)
     set_day()
     if (temp <= temp_min) and (time_now in open('run_schedule').read()):
+        ch_status='ON'
+    elif (temp <= temp) and (__builtin__.callback == 'ON'):
+        ch_status='ON'
+    elif __builtin__.callback == 'OFF':
+        ch_status='OFF'
+    else:
+        pass
+    if ch_status == 'ON':
         wiringpi.digitalWrite(0, 0)
         wiringpi.digitalWrite(2, 1)
-        print "Central Heating Running...."
+        print "Central Heating " + ch_status + "...."
         print "--------------------------------------"
-    else:
+    elif ch_status == 'OFF':
         wiringpi.digitalWrite(0, 1)
         wiringpi.digitalWrite(2, 0)
-        print "Cental Heating Off...."
+        print "Cental Heating " + ch_status + "...."
         print "--------------------------------------"
 
+GPIO.add_event_detect(22, GPIO.FALLING, callback=my_callback, bouncetime=300)
 
 if __name__ == "__main__":
     while True:
         control()
-        time.sleep(30)
+        time.sleep(2)

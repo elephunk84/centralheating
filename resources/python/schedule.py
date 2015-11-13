@@ -135,7 +135,7 @@ def set_day():
         timer=list(Sunday)
         run_timer()
     else:
-        dumpclean(Week)
+        pass
 
 def run_timer():
     now = datetime.datetime.now()
@@ -177,6 +177,7 @@ def run_timer():
             f = open('run_schedule','w')
             f.write('')
             f.close()
+            __builtin__.callback=''
         else:
             print "Program Not Active...."
 
