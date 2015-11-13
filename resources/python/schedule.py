@@ -75,7 +75,7 @@ Friday = [
           [2, "07:00", "08:30"],
           [3, " ", " "],
           [4, "10:00", "11:00"],
-          [5, "12:00", "14:00"],
+          [5, "14:00", "14:00"],
           [6, "15:30", "16:30"],
           [7, "18:00", "20:30"],
           [8, " ", " "],
@@ -118,10 +118,10 @@ def set_day():
         run_timer()
     elif today == "Tuesday":
         timer=list(Tuesday)
-        run_timer(Tuesday)
+        run_timer()
     elif today == "Wednesday":
         timer=list(Wednesday)
-        run_timer(Wednesday)
+        run_timer()
     elif today == "Thursday":
         timer=list(Thursday)
         run_timer()

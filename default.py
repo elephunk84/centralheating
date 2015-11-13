@@ -13,11 +13,13 @@ import glob
 import socket
 from resources.python import monitor
 import wiringpi2 as wiringpi
+import RPi.GPIO as GPIO
 import resources.python.schedule as schedule
 from resources.python.schedule import *
 wiringpi.wiringPiSetup()
 wiringpi.pinMode(0, 1)
 wiringpi.pinMode(2, 1)
+GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 hostname=socket.gethostname()
 maindb='/home/pi/GitRepo/centralheating/resources/python/templog.db'
 dbname='/home/pi/GitRepo/centralheating/resources/python/templog_' + str(hostname) + '.db'
