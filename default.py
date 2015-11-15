@@ -58,20 +58,28 @@ def read_db():
     temperature=curs.fetchone()
 
 def my_callback(channel):
-    if ch_status == 'OFF':
-        __builtin__.callback='ON'
+    if ('ON' in open('status').read()):
+        f=open('status', 'w')
+        f.write('')
+        f.close()
+    else:
         f=open('status', 'w')
         f.write('ON')
         f.close()
-        print __builtin__.callback
-    elif ch_status == 'ON':
-        __builtin__.callback='OFF'
-        f=open('status', 'w')
-        f.write('OFF')
-        f.close()
-        print __builtin__.callback
-    else:
-        pass
+
+def on():
+    wiringpi.digitalWrite(0, 0)
+    wiringpi.digitalWrite(2, 1)
+    print "Central Heating is " + ch_status + "...."
+    print "--------------------------------------"
+    subprocess.call(["ssh", "pi@192.168.0.129", "sh /home/pi/on.sh"])
+
+def off():
+    wiringpi.digitalWrite(0, 1)
+    wiringpi.digitalWrite(2, 0)
+    print "Central Heating is " + ch_status + "...."
+    print "--------------------------------------"
+    subprocess.call(["ssh", "pi@192.168.0.129", "sh /home/pi/off.sh"])
 
 def logic():
     global ch_status
@@ -84,46 +92,41 @@ def logic():
     tempstr= lines[1][-6:-1]
     tempvalue=float(tempstr)/1000
     temp=tempvalue
+    print "--------------------------------------"
     print "Current Temperature is...."
     print temp
     log_temperature(temp)
     set_day()
-    if ('OFF' in open('status').read()):
-        ch_status='OFF'
-    elif ('ON' in open('status').read()):
+    if (time_now in open('run_schedule').read()) and (temp <= temp_min):     
         ch_status='ON'
-    elif (time_now in open('run_schedule').read()):
-        if ('OFF' in open('status').read()):
-            ch_status='OFF'
-        elif (temp <= temp_min):     
-            ch_status='ON'
-        else:
-            ch_status='OFF'
     else:
         ch_status='OFF'
-
-def control():
-    if (ch_status == 'ON'):
-        wiringpi.digitalWrite(0, 0)
-        wiringpi.digitalWrite(2, 1)
-        subprocess.call(["ssh", "pi@192.168.0.129", "sh /home/pi/on.sh"])
-        print "Central Heating Is " + ch_status + "...."
+    if (ch_status == 'ON') and ('ON' in open('status').read()):
+        ch_status='OFF'
+        manual_override='ON'
         print "--------------------------------------"
-    elif ch_status == 'OFF':
-        wiringpi.digitalWrite(0, 1)
-        wiringpi.digitalWrite(2, 0)
-        subprocess.call(["ssh", "pi@192.168.0.129", "sh /home/pi/off.sh"])
-        print "Central Heating Is " + ch_status + "...."
+        print "Manual Override is " + manual_override + "...."
+        off()
+    elif ch_status == 'ON':
+        manual_override='OFF'
         print "--------------------------------------"
+        print "Manual Override is " + manual_override + "...."
+        on()
+    elif (ch_status == 'OFF') and ('ON' in open('status').read()):
+        manual_override='ON'
+        ch_status='ON'
+        print "--------------------------------------"
+        print "Manual Override is " + manual_override + "...."
+        on()
     else:
-        pass
+        manual_override='OFF'
+        print "--------------------------------------"
+        print "Manual Override is " + manual_override + "...."
+        off()
 
 GPIO.add_event_detect(22, GPIO.FALLING, callback=my_callback, bouncetime=300)
 
 if __name__ == "__main__":
     while True:
         logic()
-        control()
-        __builtin__.callback=""
-        temp1=temp
         time.sleep(2)
