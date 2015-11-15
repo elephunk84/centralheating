@@ -18,10 +18,12 @@ The schedule is held in resources/python/schedule.py
 
 The min and max temps are set in default.py.
 
-It utilises 2 leds to display current heating status, and one button for manual override.
+It utilises 2 Raspberry PI's, one runs the Central Heating controller and the other controls the relay. 
+The program includes  2 leds to display current heating status, and one button for manual override.
 
 Future features & to do.....
 
-- WebApp front end
-- QT Gui
-- Android app
+- External Sensor and weather dependant programming.
+- WebApp front end.
+- QT Gui.
+- Android app.
