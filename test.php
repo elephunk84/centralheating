@@ -7,18 +7,29 @@
 <?php
 if (isset($_POST['offbutton'])) { exec('echo "" > ./status'); }
 if (isset($_POST['onbutton'])) { exec('echo "ON" > ./status'); }
-echo file_get_contents( "./status" );
 ?>
 <form action="" method="post" align="center">
     <button type="submit" name="onbutton">Manual Override On</button>
     <button type="submit" name="offbutton">Manual Override Off</button>
 </form>
-<?php
-$db = new PDO ('sqlite:resources/python/templog_raspi-5.db');
 
-$results = $db->query('SELECT * FROM temps');
-while ($row = $results->fetchArray())
+<h1 align="center">
+Manual Override is - 
+<?php
+if (filesize('status') <= 1 )
 {
-var_dump($row);
+echo "OFF";
 }
+echo file_get_contents( "./status" );
+?>
+</h1>
+
+<?php
+$db = new PDO('sqlite:resources/python/templog_raspi-5.db');
+//connection code here
+$result = $db->query("SELECT * FROM temps"); //replace exec with query
+
+foreach($result as $row){
+print_r($row);
+}   
 ?>
