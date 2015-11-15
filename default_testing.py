@@ -88,13 +88,17 @@ def logic():
     print temp
     log_temperature(temp)
     set_day()
-    if (time_now in open('run_schedule').read()):
-        if (temp <= temp_min):     
+    if ('OFF' in open('status').read()):
+        ch_status='OFF'
+    elif ('ON' in open('status').read()):
+        ch_status='ON'
+    elif (time_now in open('run_schedule').read()):
+        if ('OFF' in open('status').read()):
+            ch_status='OFF'
+        elif (temp <= temp_min):     
             ch_status='ON'
         else:
             ch_status='OFF'
-    elif ('ON' in open('status').read()):
-        ch_status='ON'
     else:
         ch_status='OFF'
 

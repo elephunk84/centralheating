@@ -166,9 +166,6 @@ def run_timer():
                 f = open('run_schedule','a')
                 f.write(output+'\n' )
                 f.close()
-                f = open('status', 'w')
-                f.write('ON')
-                f.close()
         elif timenow in open('run_schedule').read() and sublist[1] == firstline:
             chon=sublist[1]
             choff=sublist[2]
@@ -176,17 +173,11 @@ def run_timer():
             print "Active Program...."
             print "On: "+ chon, "Off: "+ choff
             print "--------------------------------------"
-            f = open('status', 'w')
-            f.write('ON')
-            f.close()
         elif sublist[2] == timenow:
             f = open('run_schedule','w')
             f.write('')
             f.close()
             __builtin__.callback=''
-            f = open('status','w')
-            f.write('OFF')
-            f.close()
         else:
             print "Program Not Active...."
 
