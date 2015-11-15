@@ -89,7 +89,7 @@ Saturday = [
           [3, " ", " "],
           [4, "10:00", "11:00"],
           [5, "12:00", "14:00"],
-          [6, "15:30", "16:30"],
+          [6, "15:30", "17:30"],
           [7, "18:00", "20:30"],
           [8, " ", " "],
           [9, "22:00", "23:00"],
@@ -102,7 +102,7 @@ Sunday = [
           [4, "10:00", "11:00"],
           [5, "12:00", "14:00"],
           [6, "15:30", "16:30"],
-          [7, "18:00", "20:30"],
+          [7, "17:02", "20:30"],
           [8, " ", " "],
           [9, "22:00", "23:00"],
           [0, " ", " "]
@@ -166,6 +166,9 @@ def run_timer():
                 f = open('run_schedule','a')
                 f.write(output+'\n' )
                 f.close()
+                f = open('status', 'w')
+                f.write('ON')
+                f.close()
         elif timenow in open('run_schedule').read() and sublist[1] == firstline:
             chon=sublist[1]
             choff=sublist[2]
@@ -173,11 +176,17 @@ def run_timer():
             print "Active Program...."
             print "On: "+ chon, "Off: "+ choff
             print "--------------------------------------"
+            f = open('status', 'w')
+            f.write('ON')
+            f.close()
         elif sublist[2] == timenow:
             f = open('run_schedule','w')
             f.write('')
             f.close()
             __builtin__.callback=''
+            f = open('status','w')
+            f.write('OFF')
+            f.close()
         else:
             print "Program Not Active...."
 

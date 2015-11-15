@@ -28,7 +28,7 @@ now=datetime.datetime.now()
 today=now.strftime("%A")
 time_now=time.strftime("%H:%M", time.localtime(time.time()))
 temp_max=25
-temp_min=20
+temp_min=19.9
 __builtin__.callback = ''
 ch_status='OFF'
 
@@ -61,8 +61,16 @@ def read_db():
 def my_callback(channel):
     if ch_status == 'OFF':
         __builtin__.callback='ON'
+        f=open('status', 'w')
+        f.write('ON')
+        f.close()
+        print __builtin__.callback
     elif ch_status == 'ON':
         __builtin__.callback='OFF'
+        f=open('status', 'w')
+        f.write('OFF')
+        f.close()
+        print __builtin__.callback
     else:
         pass
 
@@ -81,15 +89,13 @@ def control():
     print temp
     log_temperature(temp)
     set_day()
-    if (temp <= temp_min) and (time_now in open('run_schedule').read()):
-        ch_status='ON'
-    elif (temp <= temp) and (__builtin__.callback == 'ON'):
-        ch_status='ON'
-    elif __builtin__.callback == 'OFF':
+    if ('OFF' in open('status').read()):
         ch_status='OFF'
+    elif (time_now in open('run_schedule').read()) or ('ON' in open('status').read()):
+        ch_status='ON'
     else:
-        pass
-    if ch_status == 'ON':
+        ch_status='OFF'
+    if (ch_status == 'ON') and (temp <= temp_min):
         wiringpi.digitalWrite(0, 0)
         wiringpi.digitalWrite(2, 1)
         subprocess.call(["ssh", "pi@192.168.0.129", "sh /home/pi/on.sh"])
@@ -107,4 +113,5 @@ GPIO.add_event_detect(22, GPIO.FALLING, callback=my_callback, bouncetime=300)
 if __name__ == "__main__":
     while True:
         control()
+        __builtin__.callback=""
         time.sleep(2)
