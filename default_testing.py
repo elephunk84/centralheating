@@ -98,6 +98,9 @@ def logic():
     tempstr= lines[1][-6:-1]
     tempvalue=float(tempstr)/1000
     temp=tempvalue
+    f=open('temp', 'w')
+    f.write(temp)
+    f.close()
     print "--------------------------------------"
     print "Current Temperature is...."
     print temp

@@ -23,6 +23,12 @@ echo "OFF";
 echo file_get_contents( "./status" );
 ?>
 </h1>
+<h1 align="center">
+Central Heating is -
+<?php
+echo file_get_contents( "./webstatus" );
+?>
+</h1>
 
 <?php
 $db = new PDO('sqlite:resources/python/templog_raspi-5.db');
