@@ -1,4 +1,4 @@
-<meta http-equiv="refresh" content="10;url=http://heating.iaincstott.co.uk" />
+<meta http-equiv="refresh" content="10">
 <link rel="stylesheet" href="/resources/css/style.css">
 <iframe id="forecast_embed" type="text/html" frameborder="0" height="245" width="100%" src="http://forecast.io/embed/#lat=53.3353&lon=-2.7307&units=uk&name=Runcorn England"> </iframe>
 <html>
@@ -83,14 +83,21 @@ if (isset($_POST['onbutton'])) { exec('echo "ON" > ./status'); }
 </form>
 
 <?php
-$db = new PDO('sqlite:resources/python/templog_raspi-5.db');
-//connection code here
-$result = $db->query("SELECT * FROM temps"); //replace exec with query
-
-foreach($result as $row){
-print_r($row);
-}   
+$db = new SQLite3('resources/python/templog_raspi-5.db');
+     
+$results = $db->query('SELECT * FROM temps LIMIT 10');
+while ($row = $results->fetchArray()) 
+{
 ?>
+<pre>
+<?php
+print_r($row);
+?>
+</pre>
+<?php
+}
+?>
+
 </body>
 
 </html>
