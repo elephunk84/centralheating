@@ -22,8 +22,7 @@ wiringpi.pinMode(2, 1)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 hostname=socket.gethostname()
-maindb='/home/pi/GitRepo/centralheating/resources/python/templog.db'
-dbname='/home/pi/GitRepo/centralheating/resources/python/templog_' + str(hostname) + '.db'
+dbname='/home/pi/GitRepo/centralheating/resources/python/templog.db'
 now=datetime.datetime.now()
 today=now.strftime("%A")
 time_now=time.strftime("%H:%M", time.localtime(time.time()))
