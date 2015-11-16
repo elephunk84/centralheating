@@ -73,6 +73,9 @@ def on():
     print "Central Heating is " + ch_status + "...."
     print "--------------------------------------"
     subprocess.call(["ssh", "pi@192.168.0.129", "sh /home/pi/on.sh"])
+    f=open('webstatus', 'w')
+    f.write('ON')
+    f.close()
 
 def off():
     wiringpi.digitalWrite(0, 1)
@@ -80,6 +83,9 @@ def off():
     print "Central Heating is " + ch_status + "...."
     print "--------------------------------------"
     subprocess.call(["ssh", "pi@192.168.0.129", "sh /home/pi/off.sh"])
+    f=open('webstatus', 'w')
+    f.write('OFF')
+    f.close()
 
 def logic():
     global ch_status
@@ -97,8 +103,9 @@ def logic():
     print temp
     log_temperature(temp)
     set_day()
-    if (time_now in open('run_schedule').read()) and (temp <= temp_min):     
-        ch_status='ON'
+    if (time_now in open('run_schedule').read()):
+        if (temp <= temp_min):     
+            ch_status='ON'
     else:
         ch_status='OFF'
     if (ch_status == 'ON') and ('ON' in open('status').read()):
