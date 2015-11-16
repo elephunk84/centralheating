@@ -152,7 +152,7 @@ def run_timer():
     now = datetime.datetime.now()
     today=now.strftime("%A")
     print "Time now is.....\n" +  today, timenow
-    firstline = open("run_schedule").readline().rstrip()
+    firstline = open("resources/run_schedule").readline().rstrip()
     for sublist in timer:
         if sublist[1] == timenow:
             chon=sublist[1]
@@ -166,10 +166,10 @@ def run_timer():
             for results in timefiller.perdelta((ch_on), (ch_off), datetime.timedelta(minutes=1)):
                 out = str(results)
                 output=out[11:-3]
-                f = open('run_schedule','a')
+                f = open('resources/run_schedule','a')
                 f.write(output+'\n' )
                 f.close()
-        elif timenow in open('run_schedule').read() and sublist[1] == firstline:
+        elif timenow in open('resources/run_schedule').read() and sublist[1] == firstline:
             chon=sublist[1]
             choff=sublist[2]
             print "--------------------------------------"
@@ -177,7 +177,7 @@ def run_timer():
             print "On: "+ chon, "Off: "+ choff
             print "--------------------------------------"
         elif sublist[2] == timenow:
-            f = open('run_schedule','w')
+            f = open('resources/run_schedule','w')
             f.write('')
             f.close()
             __builtin__.callback=''

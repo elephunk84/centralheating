@@ -13,7 +13,6 @@ import glob
 import socket
 import wiringpi2 as wiringpi
 import RPi.GPIO as GPIO
-from resources.python import monitor
 import resources.python.schedule as schedule
 from resources.python.schedule import *
 wiringpi.wiringPiSetup()
@@ -22,7 +21,7 @@ wiringpi.pinMode(2, 1)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 hostname=socket.gethostname()
-dbname='/home/pi/GitRepo/centralheating/resources/python/templog.db'
+dbname='/home/pi/GitRepo/centralheating/resources/templog.db'
 now=datetime.datetime.now()
 today=now.strftime("%A")
 time_now=time.strftime("%H:%M", time.localtime(time.time()))
@@ -53,12 +52,12 @@ def read_db():
     temperature=curs.fetchone()
 
 def my_callback(channel):
-    if ('ON' in open('status').read()):
+    if ('ON' in open('resources/status').read()):
         f=open('status', 'w')
         f.write('')
         f.close()
     else:
-        f=open('status', 'w')
+        f=open('resources/status', 'w')
         f.write('ON')
         f.close()
 
@@ -68,7 +67,7 @@ def on():
     print "Central Heating is " + ch_status + "...."
     print "--------------------------------------"
     subprocess.call(["ssh", "pi@192.168.0.129", "sh /home/pi/on.sh"])
-    f=open('webstatus', 'w')
+    f=open('resources/webstatus', 'w')
     f.write('ON')
     f.close()
 
@@ -78,7 +77,7 @@ def off():
     print "Central Heating is " + ch_status + "...."
     print "--------------------------------------"
     subprocess.call(["ssh", "pi@192.168.0.129", "sh /home/pi/off.sh"])
-    f=open('webstatus', 'w')
+    f=open('resources/webstatus', 'w')
     f.write('OFF')
     f.close()
 
@@ -93,7 +92,7 @@ def logic():
     tempstr= lines[1][-6:-1]
     tempvalue=float(tempstr)/1000
     temp=tempvalue
-    f=open('temp', 'w')
+    f=open('resources/temp', 'w')
     f.write(str(temp))
     f.close()
     print "--------------------------------------"
@@ -101,11 +100,11 @@ def logic():
     print temp
     log_temperature(temp)
     set_day()
-    if (time_now in open('run_schedule').read()):     
+    if (time_now in open('resources/run_schedule').read()):     
         ch_status='ON'
     else:
         ch_status='OFF'
-    if (ch_status == 'ON') and ('ON' in open('status').read()):
+    if (ch_status == 'ON') and ('ON' in open('resources/status').read()):
         ch_status='OFF'
         manual_override='ON'
         print "--------------------------------------"
@@ -119,7 +118,7 @@ def logic():
             on()
         else:
             off()
-    elif (ch_status == 'OFF') and ('ON' in open('status').read()):
+    elif (ch_status == 'OFF') and ('ON' in open('resources/status').read()):
         manual_override='ON'
         ch_status='ON'
         print "--------------------------------------"

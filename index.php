@@ -12,14 +12,14 @@
 <h1 align="center">
 Current Temperature is - 
 <?php
-echo file_get_contents( "./temp" );
+echo file_get_contents( "./resources/temp" );
 ?>
 &deg;C
 </h1>
 <h2 align="center">
 Central Heating is -
 <?php
-echo file_get_contents( "./webstatus" );
+echo file_get_contents( "./resources/webstatus" );
 ?>
 </br>
 Schedule Program - 
@@ -42,8 +42,8 @@ if (filesize('run_schedule') >= 1)
 --------Active Program--------
 </br>
 <?php
-$firstline = fgets(fopen("run_schedule", 'r'));
-$file = escapeshellarg("run_schedule");
+$firstline = fgets(fopen("resources/run_schedule", 'r'));
+$file = escapeshellarg("resources/run_schedule");
 $lastline = `tail -n 1 $file`;
 ?>
 ON:- 
