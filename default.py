@@ -27,7 +27,7 @@ dbname='/home/pi/GitRepo/centralheating/resources/python/templog_' + str(hostnam
 now=datetime.datetime.now()
 today=now.strftime("%A")
 time_now=time.strftime("%H:%M", time.localtime(time.time()))
-temp_min=19.999
+temp_min='19.999'
 __builtin__.callback = ''
 ch_status='OFF'
 
@@ -106,9 +106,8 @@ def logic():
     print temp
     log_temperature(temp)
     set_day()
-    if (time_now in open('run_schedule').read()):
-        if (temp <= temp_min):     
-            ch_status='ON'
+    if (time_now in open('run_schedule').read()):     
+        ch_status='ON'
     else:
         ch_status='OFF'
     if (ch_status == 'ON') and ('ON' in open('status').read()):
@@ -121,7 +120,10 @@ def logic():
         manual_override='OFF'
         print "--------------------------------------"
         print "Manual Override is " + manual_override + "...."
-        on()
+        if str(temp) <= str(temp_min):
+            on()
+        else:
+            off()
     elif (ch_status == 'OFF') and ('ON' in open('status').read()):
         manual_override='ON'
         ch_status='ON'
