@@ -26,6 +26,7 @@ dbname='/home/pi/GitRepo/centralheating/resources/python/templog.db'
 now=datetime.datetime.now()
 today=now.strftime("%A")
 time_now=time.strftime("%H:%M", time.localtime(time.time()))
+logtime=time.strftime("%Y-%m-%d %H:%M", time.localtime(time.time()))
 temp_min='19.999'
 __builtin__.callback = ''
 ch_status='OFF'
@@ -33,14 +34,9 @@ ch_status='OFF'
 def log_temperature(temp):
     conn=sqlite3.connect(dbname)
     curs=conn.cursor()
-    curs.execute("INSERT INTO temps values (?, ?);",  (time_now, temp) )
+    curs.execute("INSERT INTO temps values (?, ?);",  (logtime, temp) )
     conn.commit()
     conn.close()
-
-def templog(temp1, temp2):
-    conn=sqlite.connect(maindb)
-    curs=conn.cursor()
-    curs.execute()    
 
 def display_data():
     conn=sqlite3.connect(dbname)

@@ -81,21 +81,7 @@ if (isset($_POST['onbutton'])) { exec('echo "ON" > ./status'); }
     <button type="submit" name="onbutton">Manual Override On</button>
     <button type="submit" name="offbutton">Manual Override Off</button>
 </form>
-
 <?php
-$db = new SQLite3('resources/python/templog_raspi-5.db');
-     
-$results = $db->query('SELECT * FROM temps LIMIT 10');
-while ($row = $results->fetchArray()) 
-{
-?>
-<pre>
-<?php
-print_r($row);
-?>
-</pre>
-<?php
-}
 ?>
 
 </body>
