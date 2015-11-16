@@ -24,6 +24,6 @@ The program includes  2 leds to display current heating status, and one button f
 Future features & to do.....
 
 - External Sensor and weather dependant programming.
-- WebApp front end.
+- WebApp front end (IN PROGRESS).
 - QT Gui.
 - Android app.
