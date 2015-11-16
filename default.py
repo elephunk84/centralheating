@@ -99,7 +99,7 @@ def logic():
     tempvalue=float(tempstr)/1000
     temp=tempvalue
     f=open('temp', 'w')
-    f.write(temp)
+    f.write(str(temp))
     f.close()
     print "--------------------------------------"
     print "Current Temperature is...."
