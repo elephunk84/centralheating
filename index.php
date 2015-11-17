@@ -20,15 +20,26 @@ echo file_get_contents( "./resources/temp" );
 Central Heating is -
 <?php
 echo file_get_contents( "./resources/webstatus" );
+$status=fgets(fopen( "./resources/webstatus", 'r'));
+if ($status == 'ON');
+{
+$image = 'resources/images/greenled.jpeg';
+}
+if ($status == 'OFF');
+{
+$image = 'resources/images/redled.jpeg';
+}
+
 ?>
+<img src= "<? echo $image; ?>" alt="test"/>
 </br>
 Schedule Program - 
 <?php
-if (filesize('run_schedule') <= 1 )
+if (filesize('resources/run_schedule') <= 1 )
 {
 echo "OFF";
 }
-if (filesize('run_schedule') >= 1 )
+if (filesize('resources/run_schedule') >= 1 )
 {
 echo "ON";
 }
@@ -36,7 +47,7 @@ echo "ON";
 </h2>
 <h3 align="center">
 <?php
-if (filesize('run_schedule') >= 1)
+if (filesize('resources/run_schedule') >= 1)
 {
 ?>
 --------Active Program--------
@@ -66,16 +77,16 @@ echo $lastline;
 <h2 align="center">
 Manual Override is - 
 <?php
-if (filesize('status') <= 1 )
+if (filesize('resources/status') <= 1 )
 {
 echo "OFF";
 }
-echo file_get_contents( "./status" );
+echo file_get_contents( "./resources/status" );
 ?>
 </h2>
 <?php
-if (isset($_POST['offbutton'])) { exec('echo "" > ./status'); }
-if (isset($_POST['onbutton'])) { exec('echo "ON" > ./status'); }
+if (isset($_POST['offbutton'])) { exec('echo "" > ./resources/status'); }
+if (isset($_POST['onbutton'])) { exec('echo "ON" > ./resources/status'); }
 ?>
 <form action="" method="post" align="center">
     <button type="submit" name="onbutton">Manual Override On</button>

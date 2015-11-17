@@ -122,7 +122,7 @@ def logic():
     log_temperature(temp)
     set_day()
     schedule_check()
-    print str(status)
+    print status
     if str(status) == 'ON' and run_temp == 'OFF':
         print 'ON'
     elif run_temp == 'OFF':

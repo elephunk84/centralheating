@@ -26,9 +26,10 @@ now=datetime.datetime.now()
 today=now.strftime("%A")
 time_now=time.strftime("%H:%M", time.localtime(time.time()))
 logtime=time.strftime("%Y-%m-%d %H:%M", time.localtime(time.time()))
-temp_min='19.999'
+temp_min='25'
 __builtin__.callback = ''
-ch_status='OFF'
+global run_status
+run_status=''
 
 def log_temperature(temp):
     conn=sqlite3.connect(dbname)
@@ -52,8 +53,8 @@ def read_db():
     temperature=curs.fetchone()
 
 def my_callback(channel):
-    if ('ON' in open('resources/status').read()):
-        f=open('status', 'w')
+    if ('ON' in open('resources/webstatus').read()):
+        f=open('resources/status', 'w')
         f.write('')
         f.close()
     else:
@@ -64,7 +65,7 @@ def my_callback(channel):
 def on():
     wiringpi.digitalWrite(0, 0)
     wiringpi.digitalWrite(2, 1)
-    print "Central Heating is " + ch_status + "...."
+    print "Central Heating is ON...."
     print "--------------------------------------"
     subprocess.call(["ssh", "pi@192.168.0.129", "sh /home/pi/on.sh"])
     f=open('resources/webstatus', 'w')
@@ -74,16 +75,36 @@ def on():
 def off():
     wiringpi.digitalWrite(0, 1)
     wiringpi.digitalWrite(2, 0)
-    print "Central Heating is " + ch_status + "...."
+    print "Central Heating is OFF ...."
     print "--------------------------------------"
     subprocess.call(["ssh", "pi@192.168.0.129", "sh /home/pi/off.sh"])
     f=open('resources/webstatus', 'w')
     f.write('OFF')
     f.close()
 
+def schedule_check():
+    if (time_now in open('resources/run_schedule').read()):     
+        run_status='ON'
+        temp_check()
+    else:
+        run_status='OFF'
+
+def temp_check():
+    if (run_status == 'ON'):
+        if (str(temp) <= str(temp_min)):
+            run_temp='ON'
+            print run_temp
+    else:
+        run_temp='OFF'
+
+
 def logic():
     global ch_status
     global temp
+    global run_status
+    global run_temp
+    run_temp='OFF'
+    status=str(open('resources/status').read())
     devicelist = glob.glob('/sys/bus/w1/devices/28*')
     w1devicefile = devicelist[0] + '/w1_slave'
     fileobj = open(w1devicefile,'r')
@@ -100,36 +121,14 @@ def logic():
     print temp
     log_temperature(temp)
     set_day()
-    if (time_now in open('resources/run_schedule').read()):     
-        ch_status='ON'
+    schedule_check()
+    print str(status)
+    if str(status) == 'ON' and run_temp == 'OFF':
+        print 'ON'
+    elif run_temp == 'OFF':
+        print 'OFF'
     else:
-        ch_status='OFF'
-    if (ch_status == 'ON') and ('ON' in open('resources/status').read()):
-        ch_status='OFF'
-        manual_override='ON'
-        print "--------------------------------------"
-        print "Manual Override is " + manual_override + "...."
-        off()
-    elif ch_status == 'ON':
-        manual_override='OFF'
-        print "--------------------------------------"
-        print "Manual Override is " + manual_override + "...."
-        if str(temp) <= str(temp_min):
-            on()
-        else:
-            off()
-    elif (ch_status == 'OFF') and ('ON' in open('resources/status').read()):
-        manual_override='ON'
-        ch_status='ON'
-        print "--------------------------------------"
-        print "Manual Override is " + manual_override + "...."
-        on()
-    else:
-        manual_override='OFF'
-        print "--------------------------------------"
-        print "Manual Override is " + manual_override + "...."
-        off()
-
+        pass
 GPIO.add_event_detect(22, GPIO.FALLING, callback=my_callback, bouncetime=300)
 
 if __name__ == "__main__":
