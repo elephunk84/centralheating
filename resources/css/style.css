@@ -16,6 +16,20 @@ color: black;
 font-family: 'Open Sans', sans-serif;
 }
 
+div.leftbar
+{
+margin: -3.5% 0 0 0;
+float: left;
+width: 20%;
+overflow: hidden;
+}
+div.weather
+{
+margin: -2.5% 0 0 0;
+width: 80%;
+float: right;
+overflow: hidden;
+}
 body
 {
 background-size:cover;

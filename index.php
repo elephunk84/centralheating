@@ -3,13 +3,15 @@
 <head>
 <meta http-equiv="refresh" content="10">
 <link rel="stylesheet" href="/resources/css/style.css">
-<iframe id="forecast_embed" type="text/html" frameborder="0" height="245" width="100%" src="http://forecast.io/embed/#lat=53.3353&lon=-2.7307&units=uk&name=Runcorn England"> </iframe>
 <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 <title>Iains Central Heating Control</title>
 </head>
 
 <body>
-
+<div class="weather" align="left">
+<iframe id="forecast_embed" type="text/html" frameborder="0" height="245" width="100%" src="http://forecast.io/embed/#lat=53.3353&lon=-2.7307&units=uk&name=Runcorn England"> </iframe>
+</div>
+<div class="leftbar">
 <h1 align="center">
 Current Temperature is - 
 <?php
@@ -96,7 +98,7 @@ if (isset($_POST['onbutton'])) { exec('echo "ON" > ./resources/status'); }
 </form>
 <?php
 ?>
-
+</div>
 </body>
 
 </html>
