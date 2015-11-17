@@ -106,7 +106,7 @@ def logic():
     print temp
     log_temperature(temp)
     set_day()
-    if (time_now in open('resources/run_schedule').read()) and (temp <= temp_min):     
+    if (time_now in open('resources/run_schedule').read()) and (str(temp) <= str(temp_min)):     
         ch_status='ON'
     else:
         ch_status='OFF'
