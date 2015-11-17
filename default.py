@@ -38,7 +38,7 @@ def log_temperature(temp):
     conn.commit()
     conn.close()
     f=open('resources/temp', 'w')
-    f.write(temp)
+    f.write(str(temp))
     f.close()
 
 def templog(temp1, temp2):
