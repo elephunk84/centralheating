@@ -71,8 +71,8 @@ def my_callback(channel):
         f.close()
 
 def on():
-    wiringpi.digitalWrite(0, 0)
-    wiringpi.digitalWrite(2, 1)
+    wiringpi.digitalWrite(0, 1)
+    wiringpi.digitalWrite(2, 0)
     f=open('resources/webstatus', 'w')
     f.write('ON')
     f.close()
@@ -81,8 +81,8 @@ def on():
     subprocess.call(["ssh", "pi@192.168.0.129", "sh /home/pi/on.sh"])
 
 def off():
-    wiringpi.digitalWrite(0, 1)
-    wiringpi.digitalWrite(2, 0)
+    wiringpi.digitalWrite(0, 0)
+    wiringpi.digitalWrite(2, 1)
     f=open('resources/webstatus', 'w')
     f.write('OFF')
     f.close()
