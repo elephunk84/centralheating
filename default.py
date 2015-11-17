@@ -37,6 +37,9 @@ def log_temperature(temp):
     curs.execute("INSERT INTO temps values (?, ?);",  (time_now, temp) )
     conn.commit()
     conn.close()
+    f=open('resources/temp', 'w')
+    f.write(temp)
+    f.close()
 
 def templog(temp1, temp2):
     conn=sqlite.connect(maindb)
@@ -58,7 +61,7 @@ def read_db():
     temperature=curs.fetchone()
 
 def my_callback(channel):
-    if ('ON' in open('resources/status').read()):
+    if ('ON' in open('resources/webstatus').read()):
         f=open('resources/status', 'w')
         f.write('')
         f.close()

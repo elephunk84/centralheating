@@ -12,26 +12,27 @@
 <h1 align="center">
 Current Temperature is - 
 <?php
-echo file_get_contents( "./resources/temp" );
+echo file_get_contents( "resources/temp" );
 ?>
 &deg;C
 </h1>
 <h2 align="center">
 Central Heating is -
 <?php
-echo file_get_contents( "./resources/webstatus" );
-$status=fgets(fopen( "./resources/webstatus", 'r'));
-if ($status == 'ON');
-{
-$image = 'resources/images/greenled.jpeg';
-}
-if ($status == 'OFF');
-{
-$image = 'resources/images/redled.jpeg';
-}
+echo file_get_contents( "resources/webstatus" );
+?></br><?php
+$status=fgets(fopen( "resources/webstatus", 'r'));
+switch ($status) { 
+    case "ON":
+        $image = "resources/images/GREENLED.png";
+    break;
+    case ($status=="OFF"):
+        $image = "resources/images/REDLED.png";
+    break;
+};
 
+echo "<img src=\"$image\" height=\"48\"  width=\"48\"/>";
 ?>
-<img src= "<? echo $image; ?>" alt="test"/>
 </br>
 Schedule Program - 
 <?php
