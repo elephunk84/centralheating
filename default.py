@@ -24,12 +24,10 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 hostname=socket.gethostname()
 dbname='/home/pi/GitRepo/centralheating/resources/templog.db'
-now=datetime.datetime.now()
-today=now.strftime("%A")
-time_now=time.strftime("%H:%M", time.localtime(time.time()))
 temp_min=19.999
 __builtin__.callback = ''
-ch_status='OFF'
+ch_status=''
+time_now=''
 
 def log_temperature(temp):
     conn=sqlite3.connect(dbname)
@@ -104,9 +102,9 @@ def logic():
     print "--------------------------------------"
     print "Current Temperature is...."
     print temp
-    log_temperature(temp)
     set_day()
-    if (time_now in open('resources/run_schedule').read()) and (str(temp) <= str(temp_min)):     
+    log_temperature(temp)
+    if chon <= time_now and choff >= time_now and str(temp) <= str(temp_min):     
         ch_status='ON'
     else:
         ch_status='OFF'

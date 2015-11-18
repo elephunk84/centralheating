@@ -36,48 +36,59 @@ switch ($status) {
 
 echo "<img src=\"$image\" height=\"48\"  width=\"48\"/>";
 ?>
-</br>
+</br></br>
 Schedule Program - 
+
 <?php
-if (filesize('resources/run_schedule') <= 1 )
-{
-echo "OFF";
-}
-if (filesize('resources/run_schedule') >= 1 )
-{
-echo "ON";
-}
+$schedule=fgets(fopen( "resources/run_schedule", 'r'));
+switch ($schedule) {
+    case (strlen(schedule) > 1):
+        $run_schedule = "ON";
+        echo $run_schedule;
+    break;
+    case (strlen(schedule) == 0):
+        $run_schedule = "OFF";
+        echo $run_schedule;
+    break;
+};
+
+?></br><?php
+
+switch ($run_schedule) {
+    case "ON":
+    break;
+    case "OFF":
+        $next_run=fgets(fopen( "resources/next_run", 'r'));
+        echo "</br>Next Program - </br>";
+        echo $next_run;
+    break;
+};
 ?>
+
 </h2>
 <h3 align="center">
+
 <?php
 if (filesize('resources/run_schedule') >= 1)
-{
-?>
---------Active Program--------
-</br>
-<?php
-$firstline = fgets(fopen("resources/run_schedule", 'r'));
-$file = escapeshellarg("resources/run_schedule");
-$lastline = `tail -n 1 $file`;
-?>
-ON:- 
-<?php
-echo $firstline;
-?>
-</br>
-OFF:- 
-<?php
-echo $lastline;
-?>
-</br>
--------------------------------------
-<?php
-}
+    {
+    ?>
+    --------Active Program--------
+    </br>
+    <?php
+    $firstline = fgets(fopen("resources/run_schedule", 'r'));
+    $file = escapeshellarg("resources/run_schedule");
+    $lastline = `tail -n 1 $file`;
+    ?>
+    ON:- <?php echo $firstline;?>
+    </br>
+    OFF:- <?php echo $lastline;?>
+    </br>
+    -------------------------------------
+    <?php
+    };
 ?>
 </br>
 </h3>
-</br>
 <h2 align="center">
 Manual Override is - 
 <?php
