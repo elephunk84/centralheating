@@ -140,15 +140,15 @@ def set_day():
         pass
 
 def run_timer():
-    now = datetime.datetime.now()
     global timenow
     global time_now
+    global today
     global ch_off
     global ch_off
+    now = datetime.datetime.now()
     sublistcheck=''
     timenow=now.strftime("%H:%M")
     time_now=timenow
-    global today
     now = datetime.datetime.now()
     today=now.strftime("%A")
     print "Time now is.....\n" +  today, timenow

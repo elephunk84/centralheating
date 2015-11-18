@@ -25,7 +25,6 @@ GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 hostname=socket.gethostname()
 dbname='/home/pi/GitRepo/centralheating/resources/templog.db'
 now=datetime.datetime.now()
-today=now.strftime("%A")
 time_now=time.strftime("%H:%M", time.localtime(time.time()))
 temp_min=19.999
 __builtin__.callback = ''
