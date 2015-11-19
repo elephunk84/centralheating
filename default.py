@@ -24,7 +24,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 hostname=socket.gethostname()
 dbname='/home/pi/GitRepo/centralheating/resources/templog.db'
-temp_min=19.999
+temp_min=19.499
 __builtin__.callback = ''
 ch_status=''
 time_now=''

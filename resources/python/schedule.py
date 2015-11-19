@@ -167,6 +167,9 @@ def run_timer():
             ch_status="ON"
         else:
             print "Program Not Active...."
+            f = open('resources/run_schedule','w')
+            f.write('')
+            f.close()
     for sublist in timer: 
         if (sublist[1] >= timenow):
             if sublist[1] <= str(nexthour):

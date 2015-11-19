@@ -14,62 +14,74 @@
 <div class="leftbar">
 <h1 align="center">
 Current Temperature is - 
-<?php
-echo file_get_contents( "resources/temp" );
-?>
+
+    <?php
+    echo file_get_contents( "resources/temp" );
+    ?>
+
 &deg;C
 </h1>
 <h2 align="center">
-Central Heating is -
-<?php
-echo file_get_contents( "resources/webstatus" );
-?></br><?php
-$status=fgets(fopen( "resources/webstatus", 'r'));
-switch ($status) { 
-    case "ON":
-        $image = "resources/images/GREENLED.png";
-    break;
-    case ($status=="OFF"):
-        $image = "resources/images/REDLED.png";
-    break;
-};
 
-echo "<img src=\"$image\" height=\"48\"  width=\"48\"/>";
-?>
+Central Heating is -
+
+    <?php
+    echo file_get_contents( "resources/webstatus" );
+    ?>
+
+</br>
+
+    <?php
+    $status=fgets(fopen( "resources/webstatus", 'r'));
+    switch ($status) { 
+        case "ON":
+            $image = "resources/images/GREENLED.png";
+        break;
+        case ($status=="OFF"):
+            $image = "resources/images/REDLED.png";
+        break;
+        };
+
+    echo "<img src=\"$image\" height=\"48\"  width=\"48\"/>";
+    ?>
+
 </br></br>
 Schedule Program - 
 
-<?php
-$schedule=fgets(fopen( "resources/run_schedule", 'r'));
-switch ($schedule) {
-    case (strlen(schedule) > 1):
-        $run_schedule = "ON";
-        echo $run_schedule;
-    break;
-    case (strlen(schedule) == 0):
-        $run_schedule = "OFF";
-        echo $run_schedule;
-    break;
-};
+    <?php
+    $schedule=fgets(fopen( "resources/run_schedule", 'r'));
+    switch ($schedule) {
+        case (strlen(schedule) > 1):
+            $run_schedule = "ON";
+            echo $run_schedule;
+        break;
+        case (strlen(schedule) == 0):
+            $run_schedule = "OFF";
+            echo $run_schedule;
+        break;
+    };
+    ?>
 
-?></br><?php
+</br>
 
-switch ($run_schedule) {
-    case "ON":
-    break;
-    case "OFF":
-        $next_run=fgets(fopen( "resources/next_run", 'r'));
-        echo "</br>Next Program - </br>";
-        echo $next_run;
-    break;
-};
-?>
+    <?php
+
+    switch ($run_schedule) {
+        case "ON":
+        break;
+        case "OFF":
+            $next_run=fgets(fopen( "resources/next_run", 'r'));
+            echo "</br>Next Program - </br>";
+            echo $next_run;
+        break;
+    };
+    ?>
 
 </h2>
 <h3 align="center">
 
-<?php
-if (filesize('resources/run_schedule') >= 1)
+    <?php
+    if (filesize('resources/run_schedule') >= 1)
     {
     ?>
     --------Active Program--------
@@ -86,29 +98,33 @@ if (filesize('resources/run_schedule') >= 1)
     -------------------------------------
     <?php
     };
-?>
+    ?>
+
 </br>
 </h3>
 <h2 align="center">
 Manual Override is - 
-<?php
-if (filesize('resources/status') <= 1 )
-{
-echo "OFF";
-}
-echo file_get_contents( "./resources/status" );
-?>
+
+    <?php
+    if (filesize("resources/status") <= 1 )
+    {
+    echo "OFF";
+    }
+    echo file_get_contents( "./resources/status" );
+    ?>
+
 </h2>
-<?php
-if (isset($_POST['offbutton'])) { exec('echo "" > ./resources/status'); }
-if (isset($_POST['onbutton'])) { exec('echo "ON" > ./resources/status'); }
-?>
+
+    <?php
+    if (isset($_POST['offbutton'])) { exec('echo "" > ./resources/status'); }
+    if (isset($_POST['onbutton'])) { exec('echo "ON" > ./resources/status'); }
+    ?>
+
 <form action="" method="post" align="center">
     <button type="submit" name="onbutton">Manual Override On</button>
     <button type="submit" name="offbutton">Manual Override Off</button>
 </form>
-<?php
-?>
+
 </div>
 </body>
 
