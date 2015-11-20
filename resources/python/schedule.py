@@ -18,6 +18,8 @@ global sublistcheckprint
 chon=""
 choff=""
 sublistcheck=''
+__builtin__.ch_on=''
+__builtin__.ch_off=''
 
 Monday = [
           [1, "04:30", "05:30"],
@@ -148,31 +150,33 @@ def run_timer():
     global ch_status
     sublistcheck=''
     timenow=now.strftime("%H:%M")
-    time_now=timenow
+    time_now=str(timenow)
     nexthour=datetime.datetime.now() + datetime.timedelta(minutes=60)
     print "Time now is.....\n" +  today, timenow
     for sublist in timer:
-        if (sublist[1] <= timenow) and (sublist[2] >= timenow):
+        if (sublist[1] <= timenow) and (sublist[2] > timenow):
             chon=sublist[1]
             choff=sublist[2]
             print "--------------------------------------"
             print "Active Program...."
             print "On: "+ chon, "Off: "+ choff
             print "--------------------------------------"
-            ch_on = datetime.datetime.strptime(chon, '%H:%M')
-            ch_off = datetime.datetime.strptime(choff, '%H:%M')
+            __builtin__.ch_on = datetime.datetime.strptime(chon, '%H:%M')
+            __builtin__.ch_off = datetime.datetime.strptime(choff, '%H:%M')
             f = open('resources/run_schedule','w')
             f.write(chon + '\n' + choff)
             f.close()
-            ch_status="ON"
-        else:
-            print "Program Not Active...."
+            __builtin__.chstatus="ON"
+        elif sublist[2] == timenow:
             f = open('resources/run_schedule','w')
             f.write('')
             f.close()
+            __builtin__.chstatus="OFF"
+        else:
+            print "Program Not Active...."
     for sublist in timer: 
         if (sublist[1] >= timenow):
-            if sublist[1] <= str(nexthour):
+            if sublist[1] < str(nexthour):
                 program=("On: " + sublist[1] + "  Off: " + sublist[2])
                 print "--------------------------------------"
                 print "Next Active Program...."

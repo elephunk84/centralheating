@@ -14,8 +14,8 @@ import glob
 import socket
 import wiringpi2 as wiringpi
 import RPi.GPIO as GPIO
-from resources.python import monitor
 import resources.python.schedule as schedule
+from resources.python import monitor
 from resources.python.schedule import *
 wiringpi.wiringPiSetup()
 wiringpi.pinMode(0, 1)
@@ -26,6 +26,8 @@ hostname=socket.gethostname()
 dbname='/home/pi/GitRepo/centralheating/resources/templog.db'
 temp_min=19.499
 __builtin__.callback = ''
+__builtin__.chon=''
+__builtin__.chstatus=''
 ch_status=''
 time_now=''
 
@@ -104,7 +106,7 @@ def logic():
     print temp
     set_day()
     log_temperature(temp)
-    if chon <= time_now and choff >= time_now and str(temp) <= str(temp_min):     
+    if __builtin__.chstatus == "ON" and (str(temp) <= str(temp_min)):     
         ch_status='ON'
     else:
         ch_status='OFF'
