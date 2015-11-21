@@ -83,7 +83,7 @@ Friday = [
           [6, "15:30", "16:30"],
           [7, "18:00", "20:30"],
           [8, " ", " "],
-          [9, "22:00", "23:00"],
+          [9, "21:30", "23:00"],
           [0, " ", " "]
 
           ]  
@@ -151,8 +151,9 @@ def run_timer():
     sublistcheck=''
     timenow=now.strftime("%H:%M")
     time_now=str(timenow)
-    nexthour=datetime.datetime.now() + datetime.timedelta(minutes=60)
-    print "Time now is.....\n" +  today, timenow
+    next_hour=datetime.datetime.now() + datetime.timedelta(minutes=120)
+    nexthour=next_hour.strftime("%H:%M")
+    print "Time now is " +  today, timenow + "...."
     for sublist in timer:
         if (sublist[1] <= timenow) and (sublist[2] > timenow):
             chon=sublist[1]
