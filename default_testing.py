@@ -29,6 +29,7 @@ __builtin__.chon=''
 __builtin__.chstatus=''
 ch_status=''
 time_now=''
+now = datetime.datetime.now()
 day_temp=17.999
 night_temp=19.999
 
@@ -95,7 +96,8 @@ def logic():
     global ch_status
     global temp
     global set_temp
-    if time_now < "17:00":
+    timenow=now.strftime("%H:%M")
+    if timenow < "17:00":
         set_temp=str(day_temp)
     else:
         set_temp=str(night_temp)
