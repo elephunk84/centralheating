@@ -1,5 +1,4 @@
-#v1.0.1 - Initial Release
-#Central Heating Controller
+#v1.0.2- Central Heating Controller
 
 This central heating controller requires WiringPi, WiringPi for Python and RPi.GPIO to be installed.
 
