@@ -118,11 +118,48 @@ Manual Override is -
     <?php
     if (isset($_POST['offbutton'])) { exec('echo "" > ./resources/status'); }
     if (isset($_POST['onbutton'])) { exec('echo "ON" > ./resources/status'); }
+    $status=fgets(fopen( "./resources/status", 'r'));
+    var_dump($_POST);
+    if (isset($_POST['advance'])){ 
+    switch ($status){
+        case "ON":
+            exec('echo "" > ./resources/status');
+            break;
+        case "":
+            exec('echo "ON" > ./resources/status');
+            break;
+    };
+    }
     ?>
 
 <form action="" method="post" align="center">
     <button type="submit" name="onbutton">Manual Override On</button>
     <button type="submit" name="offbutton">Manual Override Off</button>
+    <button type="submit" name="advance">Advance</button>
+</form>
+
+<h2 align="center">
+Holiday Mode is - 
+
+    <?php
+    if (filesize("resources/holiday") <= 1 )
+    {
+    echo "OFF";
+    }
+    echo file_get_contents( "./resources/holiday" );
+    ?>
+
+</h2>
+
+
+    <?php
+    if (isset($_POST['offholiday'])) { exec('echo "OFF" > ./resources/holiday'); }
+    if (isset($_POST['onholiday'])) { exec('echo "ON" > ./resources/holiday'); }
+    ?>
+
+<form action="" method="post" align="center">
+    <button type="submit" name="onholiday">Holiday Mode On</button>
+    <button type="submit" name="offholiday">Holiday Mode Off</button>
 </form>
 
 </div>

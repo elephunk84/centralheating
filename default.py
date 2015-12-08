@@ -1,11 +1,15 @@
 #v1.0.1 - Initial Release
 #!/bin/python
+
+day_temp=16.999
+night_temp=19.999
+
 import os
 import sys
 import subprocess
 lib_path = os.path.abspath(os.path.join('/home/pi/GitRepo/centralheating/', 'lib'))
 sys.path.append(lib_path)
-
+import math
 import __builtin__
 import time
 import datetime
@@ -26,12 +30,9 @@ hostname=socket.gethostname()
 dbname='/home/pi/GitRepo/centralheating/resources/templog.db'
 __builtin__.callback = ''
 __builtin__.chon=''
-__builtin__.chstatus=''
 ch_status=''
 time_now=''
 now = datetime.datetime.now()
-day_temp=17.999
-night_temp=19.999
 
 def log_temperature(temp):
     conn=sqlite3.connect(dbname)
@@ -96,12 +97,9 @@ def logic():
     global ch_status
     global temp
     global set_temp
-    timenow=now.strftime("%H:%M")
-    if timenow < "17:00":
-        set_temp=str(day_temp)
-    else:
-        set_temp=str(night_temp)
-    devicelist = glob.glob('/sys/bus/w1/devices/28*')
+    now = datetime.datetime.now()
+    now_today=str(now.strftime("%H:%M"))    
+    devicelist = glob.glob('/sys/bus/w1/devices/28-0314634e50ff')
     w1devicefile = devicelist[0] + '/w1_slave'
     fileobj = open(w1devicefile,'r')
     lines = fileobj.readlines()
@@ -109,9 +107,15 @@ def logic():
     tempstr= lines[1][-6:-1]
     tempvalue=float(tempstr)/1000
     temp=tempvalue
+    if str(now_today) < str("17:00"):
+        set_temp=str(day_temp)
+    else:
+        set_temp=str(night_temp)
+    temp_set=math.ceil(float(set_temp))
     print "--------------------------------------"
     print "Current Temperature is " + str(temp) + "...."
-    print "The Temperature is set to " + str(set_temp) + "...."
+    print "The Temperature is set to " + str(temp_set) + "...."
+    print "--------------------------------------"
     set_day()
     log_temperature(temp)
     if __builtin__.chstatus == "ON" and (str(temp) <= str(set_temp)):     
@@ -128,13 +132,21 @@ def logic():
         manual_override='OFF'
         print "--------------------------------------"
         print "Manual Override is " + manual_override + "...."
-        on()
+        if 'ON' in (open('resources/holiday').read()):
+            print "Holiday Mode Enabled...."
+            off()
+        else:
+            on()
     elif (ch_status == 'OFF') and ('ON' in open('resources/status').read()):
         manual_override='ON'
         ch_status='ON'
         print "--------------------------------------"
         print "Manual Override is " + manual_override + "...."
-        on()
+        if 'ON' in (open('resources/holiday').read()):
+            print "Holiday Mode Enabled...."
+            off()
+        else:
+            on()
     else:
         manual_override='OFF'
         print "--------------------------------------"
@@ -146,5 +158,7 @@ GPIO.add_event_detect(22, GPIO.FALLING, callback=my_callback, bouncetime=300)
 if __name__ == "__main__":
     while True:
         logic()
-        time.sleep(2)
+        next_run()
+        clean_up()
+        time.sleep(3)
 
