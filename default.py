@@ -3,6 +3,8 @@
 
 day_temp=16.999
 night_temp=19.999
+iains_ip='192.168.0.25'
+eloras_ip='192.168.0.26'
 
 import os
 import sys
@@ -33,6 +35,21 @@ __builtin__.chon=''
 ch_status=''
 time_now=''
 now = datetime.datetime.now()
+
+def ping_ip():
+	global occupied
+	ips=[iains_ip, eloras_ip]
+	for ip in ips:
+		response = os.system("ping -c 1 " + ip)
+		if response == 0:
+			print ip, 'is up!'
+			occupied='yes'
+			return
+		else:
+			print ip, 'is down!'
+			occupied='no'
+
+
 
 def log_temperature(temp):
     conn=sqlite3.connect(dbname)
@@ -157,8 +174,12 @@ GPIO.add_event_detect(22, GPIO.FALLING, callback=my_callback, bouncetime=300)
 
 if __name__ == "__main__":
     while True:
-        logic()
-        next_run()
-        clean_up()
-        time.sleep(3)
+        ping_ip()
+        if occupied == 'no':
+		    pass
+        else:
+            logic()
+            next_run()
+            clean_up()
+            time.sleep(3)
 
