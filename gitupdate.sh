@@ -6,4 +6,4 @@ echo "git Commit comment ="
 read comment
 git commit -m \"$comment\"
 echo "git Push...."
-git push origin master
+git push origin master > /dev/null
