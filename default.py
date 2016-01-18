@@ -29,34 +29,36 @@ wiringpi.pinMode(2, 1)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 hostname=socket.gethostname()
-dbname='/home/pi/GitRepo/centralheating/resources/templog.db'
+now = datetime.datetime.now()
+date = now.strftime("%a-%d-%B-%Y")
+dbname='/home/pi/GitRepo/centralheating/resources/database/templog_' + date + '.db'
 __builtin__.callback = ''
 __builtin__.chon=''
 ch_status=''
 time_now=''
-now = datetime.datetime.now()
+global occupied
 
 def ping_ip():
 	global occupied
 	ips=[iains_ip, eloras_ip]
 	for ip in ips:
-		response = os.system("ping -c 1 " + ip)
+		response = os.system("ping -c 1 " + ip + " > /dev/null")
 		if response == 0:
-			print ip, 'is up!'
-			occupied='yes'
-			return
+                        occupied='YES'
+                        return
 		else:
-			print ip, 'is down!'
-			occupied='no'
+                        occupied='NO'
 
 
 
 def log_temperature(temp):
-    conn=sqlite3.connect(dbname)
-    curs=conn.cursor()
-    curs.execute("INSERT INTO temps values (?, ?);",  (time_now, temp) )
-    conn.commit()
-    conn.close()
+    with sqlite3.connect(dbname) as conn:
+        curs=conn.cursor()
+        tablename='temps'
+        tablecheck='create table if not exists ' + tablename + '(timestamp DATETIME, temp NUMERIC);'
+        curs.execute(tablecheck)
+        curs.execute("INSERT INTO temps values (?, ?);",  (time_now, temp) )
+        conn.commit()
     f=open('resources/temp', 'w')
     f.write(str(temp))
     f.close()
@@ -135,7 +137,10 @@ def logic():
     print "--------------------------------------"
     set_day()
     log_temperature(temp)
-    if __builtin__.chstatus == "ON" and (str(temp) <= str(set_temp)):     
+    ping_ip()
+    print "--------------------------------------"
+    print "Is anybody home?... " + occupied
+    if __builtin__.chstatus == "ON" and (str(temp) <= str(set_temp)) and ( occupied == 'YES'):     
         ch_status='ON'
     else:
         ch_status='OFF'
@@ -145,7 +150,7 @@ def logic():
         print "--------------------------------------"
         print "Manual Override is " + manual_override + "...."
         off()
-    elif ch_status == 'ON':
+    elif (ch_status == 'ON') and (occupied == 'YES'):
         manual_override='OFF'
         print "--------------------------------------"
         print "Manual Override is " + manual_override + "...."
@@ -174,12 +179,8 @@ GPIO.add_event_detect(22, GPIO.FALLING, callback=my_callback, bouncetime=300)
 
 if __name__ == "__main__":
     while True:
-        ping_ip()
-        if occupied == 'no':
-		    pass
-        else:
-            logic()
-            next_run()
-            clean_up()
-            time.sleep(3)
+        logic()
+        next_run()
+        clean_up()
+        time.sleep(3)
 
