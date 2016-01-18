@@ -1,10 +1,9 @@
-#v1.0.1 - Initial Release
+#v1.0.3.1
 #!/bin/python
 
 day_temp=16.999
 night_temp=19.999
-iains_ip='192.168.0.25'
-eloras_ip='192.168.0.26'
+ips=['192.168.0.25', '192.168.0.26']
 
 import os
 import sys
@@ -36,12 +35,10 @@ __builtin__.callback = ''
 __builtin__.chon=''
 ch_status=''
 time_now=''
-global occupied
 
 def ping_ip():
-	global occupied
-	ips=[iains_ip, eloras_ip]
-	for ip in ips:
+        global occupied
+        for ip in ips:
 		response = os.system("ping -c 1 " + ip + " > /dev/null")
 		if response == 0:
                         occupied='YES'
@@ -57,16 +54,11 @@ def log_temperature(temp):
         tablename='temps'
         tablecheck='create table if not exists ' + tablename + '(timestamp DATETIME, temp NUMERIC);'
         curs.execute(tablecheck)
-        curs.execute("INSERT INTO temps values (?, ?);",  (time_now, temp) )
+        curs.execute("INSERT INTO temps values (?, ?);",  (temp_time, temp) )
         conn.commit()
     f=open('resources/temp', 'w')
     f.write(str(temp))
     f.close()
-
-def templog(temp1, temp2):
-    conn=sqlite.connect(maindb)
-    curs=conn.cursor()
-    curs.execute()    
 
 def display_data():
     conn=sqlite3.connect(dbname)
@@ -116,8 +108,10 @@ def logic():
     global ch_status
     global temp
     global set_temp
+    global temp_time
     now = datetime.datetime.now()
     now_today=str(now.strftime("%H:%M"))    
+    temp_time = now.strftime("%H:%M:%S")
     devicelist = glob.glob('/sys/bus/w1/devices/28-0314634e50ff')
     w1devicefile = devicelist[0] + '/w1_slave'
     fileobj = open(w1devicefile,'r')

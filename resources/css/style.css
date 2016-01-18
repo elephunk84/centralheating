@@ -66,6 +66,7 @@ display:block;
    font-family: Georgia, serif;
    text-decoration: none;
    vertical-align: middle;
+   height: 40px;
    }
 .button:hover {
    border-top-color: #28597a;
