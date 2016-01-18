@@ -148,21 +148,13 @@ def logic():
         manual_override='OFF'
         print "--------------------------------------"
         print "Manual Override is " + manual_override + "...."
-        if 'ON' in (open('resources/holiday').read()):
-            print "Holiday Mode Enabled...."
-            off()
-        else:
-            on()
+        on()
     elif (ch_status == 'OFF') and ('ON' in open('resources/status').read()):
         manual_override='ON'
         ch_status='ON'
         print "--------------------------------------"
         print "Manual Override is " + manual_override + "...."
-        if 'ON' in (open('resources/holiday').read()):
-            print "Holiday Mode Enabled...."
-            off()
-        else:
-            on()
+        on()
     else:
         manual_override='OFF'
         print "--------------------------------------"
