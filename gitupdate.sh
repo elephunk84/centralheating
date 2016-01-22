@@ -23,4 +23,4 @@ git commit -m \"$comment\"
 echo "git Push...."
 git push origin master > /dev/null
 echo "Starting Heating System...."
-heating
+sudo python default.py
