@@ -1,5 +1,7 @@
 #!/bin/bash
 cd /home/pi/GitRepo/centralheating
+echo "Terminating Heating System...."
+screen -X -S heating quit
 echo "Which branch have you been editing testing/main???"
 main='main'
 testing='testing'
@@ -20,3 +22,5 @@ read comment
 git commit -m \"$comment\"
 echo "git Push...."
 git push origin master > /dev/null
+echo "Starting Heating System...."
+heating
