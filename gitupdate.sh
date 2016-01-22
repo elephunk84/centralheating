@@ -23,4 +23,4 @@ git commit -m \"$comment\"
 echo "git Push...."
 git push origin master > /dev/null
 echo "Starting Heating System...."
-sudo python default.py
+sh run_me_on_boot.sh
