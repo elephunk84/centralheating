@@ -31,41 +31,68 @@ hostname=socket.gethostname()
 now = datetime.datetime.now()
 date = now.strftime("%a-%d-%B-%Y")
 templog='/home/pi/GitRepo/centralheating/resources/database/templog_' + date + '.db'
+datalog='/home/pi/GitRepo/centralheating/resources/database/datalog.db'
 __builtin__.callback = ''
 __builtin__.chon=''
 ch_status=''
 time_now=''
 
 def ping_ip():
-        global occupied
-        for ip in ips:
-		response = os.system("ping -c 1 " + ip + " > /dev/null")
-		if response == 0:
-                        occupied='YES'
-                        return
-		else:
-                        occupied='NO'
-                        return
-
-
-
+    global occupied
+    for ip in ips:
+        response = os.system("ping -c 1 " + ip + " > /dev/null")
+        if response == 1:
+            response2 = os.system("ping -c 1 " + ip + " > /dev/null")
+            if response2 == 1:
+                response3 = os.system("ping -c 1 " + ip + " > /dev/null")
+                if response3 == 1:
+					occupied='NO'
+					return
+                else:
+                    occupied='YES'
+                    return
+        else:
+            occupied='YES'
+            return
+		    
 def log_temperature(temp):
-    with sqlite3.connect(templog) as conn:
-        curs=conn.cursor()
+    with sqlite3.connect(templog) as tempconn:
+        curs=tempconn.cursor()
         tablename='temps'
         tablecheck='create table if not exists ' + tablename + '(timestamp DATETIME, temp NUMERIC, occupied text, advance text);'
         curs.execute(tablecheck)
         curs.execute("INSERT INTO temps values (?, ?, ?, ?);",  (temp_time, temp, occupied, manual_override) )
-        conn.commit()
+        tempconn.commit()
     f=open('resources/temp', 'w')
     f.write(str(temp))
     f.close()
 
+def log_status_change():
+    with sqlite3.connect(datalog) as dataconn:
+        curs=dataconn.cursor()
+        tablename='status'
+        tablecheck='create table if not exists ' + tablename + '(timestamp DATETIME, occupied text, advance text);'
+        curs.execute(tablecheck)
+        curs.execute("INSERT INTO status values (?, ?, ?);",  (temp_time, occupied, ch_status) )
+        dataconn.commit()
+        
 def display_data():
+    print ""
+    print "Templog...."
+    print "--------------------------------------"
     conn=sqlite3.connect(templog)
     curs=conn.cursor()
     for row in curs.execute("SELECT * FROM temps ORDER BY ROWID DESC LIMIT 10;"):
-        print str(row[0])+"	"+str(row[1])+" "+str(row[2])+" "+str(row[3])
+        print str(row[0])+"		"+str(row[1])+"		"+str(row[2])+"		"+str(row[3])
+    conn.close()
+    print ""
+    print "Datalog...."
+    print "TIME		   OCCUPIED		STATUS"
+    print "--------------------------------------"
+    conn=sqlite3.connect(datalog)
+    curs=conn.cursor()
+    for row in curs.execute("SELECT * FROM status ORDER BY ROWID DESC LIMIT 10;"):
+        print str(row[0])+"		"+str(row[1])+"		"+str(row[2])
     conn.close()
 
 def read_db():
@@ -86,26 +113,51 @@ def my_callback(channel):
         f.close()
 
 def on():
-    wiringpi.digitalWrite(0, 1)
-    wiringpi.digitalWrite(2, 0)
-    f=open('resources/webstatus', 'w')
-    f.write('ON')
-    f.close()
     print "Central Heating is " + ch_status + "...."
     print "--------------------------------------"
-    subprocess.call(["ssh", "pi@192.168.0.129", "sh /home/pi/on.sh"])
+    status = ('ON') in open('resources/webstatus').read()
+    if ( status == True ):
+        pass
+    else:
+        wiringpi.digitalWrite(0, 1)
+        wiringpi.digitalWrite(2, 0)
+        f=open('resources/webstatus', 'w')
+        f.write('ON')
+        f.close()
+        subprocess.call(["ssh", "pi@192.168.0.129", "sh /home/pi/on.sh"])
+        log_status_change()
 
 def off():
-    wiringpi.digitalWrite(0, 0)
-    wiringpi.digitalWrite(2, 1)
-    f=open('resources/webstatus', 'w')
-    f.write('OFF')
-    f.close()
     print "Central Heating is " + ch_status + "...."
     print "--------------------------------------"
-    subprocess.call(["ssh", "pi@192.168.0.129", "sh /home/pi/off.sh"])
+    status = ('OFF') in open('resources/webstatus').read()
+    if ( status == True ):
+        pass
+    else:
+        wiringpi.digitalWrite(0, 0)
+        wiringpi.digitalWrite(2, 1)
+        f=open('resources/webstatus', 'w')
+        f.write('OFF')
+        f.close()
+        subprocess.call(["ssh", "pi@192.168.0.129", "sh /home/pi/off.sh"])
+        log_status_change()
+
+def clear_screen():
+    print
+    print
+    print
+    print
+    print
+    print
+    print
+    print
+    print
+    print
+    print
+    print
 
 def logic():
+    clear_screen()
     global ch_status
     global temp
     global set_temp
@@ -130,37 +182,34 @@ def logic():
     print "--------------------------------------"
     print "Current Temperature is " + str(temp) + "...."
     print "The Temperature is set to " + str(temp_set) + "...."
-    print "--------------------------------------"
     set_day()
     ping_ip()
     print "--------------------------------------"
-    print "Is anybody home?... " + occupied
+    print "Is anybody home?...." + occupied 
     if __builtin__.chstatus == "ON" and (str(temp) <= str(set_temp)) and ( occupied == 'YES'):     
         ch_status='ON'
     else:
         ch_status='OFF'
     if (ch_status == 'ON') and ('ON' in open('resources/status').read()):
-        ch_status='OFF'
         manual_override='ON'
-        print "--------------------------------------"
         print "Manual Override is " + manual_override + "...."
         off()
+        clean_up()
     elif (ch_status == 'ON'):
         manual_override='OFF'
-        print "--------------------------------------"
         print "Manual Override is " + manual_override + "...."
         on()
+        clean_up()
     elif (ch_status == 'OFF') and ('ON' in open('resources/status').read()):
         manual_override='ON'
-        ch_status='ON'
-        print "--------------------------------------"
         print "Manual Override is " + manual_override + "...."
         on()
+        clean_up()
     else:
         manual_override='OFF'
-        print "--------------------------------------"
         print "Manual Override is " + manual_override + "...."
         off()
+        clean_up()
 
 GPIO.add_event_detect(22, GPIO.FALLING, callback=my_callback, bouncetime=300)
 
@@ -168,6 +217,5 @@ if __name__ == "__main__":
     while True:
         logic()
         next_run()
-        clean_up()
         time.sleep(3)
         log_temperature(temp)

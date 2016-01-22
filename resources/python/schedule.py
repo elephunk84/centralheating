@@ -154,19 +154,21 @@ def run_timer():
     next_hour=datetime.datetime.now() + datetime.timedelta(minutes=120)
     nexthour=next_hour.strftime("%H:%M")
     print "Time now is " +  today, timenow + "...."
+    print "--------------------------------------"
     for sublist in timer:
         if (sublist[1] <= timenow) and (sublist[2] > timenow):
             chon=sublist[1]
             choff=sublist[2]
             print "--------------------------------------"
-            print "Active Program...."
+            print "Program "+ str(sublist[0]) +" Active...."
             print "On: "+ chon, "Off: "+ choff
             print "--------------------------------------"
             run_schedule=open('resources/run_schedule', 'w')
             run_schedule.write(chon + '\n' + choff)
             __builtin__.chstatus='ON'
         else:
-            print "Program Not Active...."
+            print "Program "+ str(sublist[0]) +" Not Active...."
+    
 
 def next_run():
     for sublist in timer: 
