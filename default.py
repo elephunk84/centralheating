@@ -30,7 +30,7 @@ GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 hostname=socket.gethostname()
 now = datetime.datetime.now()
 date = now.strftime("%a-%d-%B-%Y")
-dbname='/home/pi/GitRepo/centralheating/resources/database/templog_' + date + '.db'
+templog='/home/pi/GitRepo/centralheating/resources/database/templog_' + date + '.db'
 __builtin__.callback = ''
 __builtin__.chon=''
 ch_status=''
@@ -45,30 +45,31 @@ def ping_ip():
                         return
 		else:
                         occupied='NO'
+                        return
 
 
 
 def log_temperature(temp):
-    with sqlite3.connect(dbname) as conn:
+    with sqlite3.connect(templog) as conn:
         curs=conn.cursor()
         tablename='temps'
-        tablecheck='create table if not exists ' + tablename + '(timestamp DATETIME, temp NUMERIC);'
+        tablecheck='create table if not exists ' + tablename + '(timestamp DATETIME, temp NUMERIC, occupied text, advance text);'
         curs.execute(tablecheck)
-        curs.execute("INSERT INTO temps values (?, ?);",  (temp_time, temp) )
+        curs.execute("INSERT INTO temps values (?, ?, ?, ?);",  (temp_time, temp, occupied, manual_override) )
         conn.commit()
     f=open('resources/temp', 'w')
     f.write(str(temp))
     f.close()
 
 def display_data():
-    conn=sqlite3.connect(dbname)
+    conn=sqlite3.connect(templog)
     curs=conn.cursor()
     for row in curs.execute("SELECT * FROM temps ORDER BY ROWID DESC LIMIT 10;"):
-        print str(row[0])+"	"+str(row[1])
+        print str(row[0])+"	"+str(row[1])+" "+str(row[2])+" "+str(row[3])
     conn.close()
 
 def read_db():
-    conn=sqlite3.connect(dbname)
+    conn=sqlite3.connect(templog)
     curs=conn.cursor()
     curs.execute("SELECT temp FROM temps;")
     conn.commit()
@@ -109,10 +110,11 @@ def logic():
     global temp
     global set_temp
     global temp_time
+    global manual_override
     now = datetime.datetime.now()
     now_today=str(now.strftime("%H:%M"))    
     temp_time = now.strftime("%H:%M:%S")
-    devicelist = glob.glob('/sys/bus/w1/devices/28-0314634e50ff')
+    devicelist = glob.glob('/sys/bus/w1/devices/28-*')
     w1devicefile = devicelist[0] + '/w1_slave'
     fileobj = open(w1devicefile,'r')
     lines = fileobj.readlines()
@@ -130,7 +132,6 @@ def logic():
     print "The Temperature is set to " + str(temp_set) + "...."
     print "--------------------------------------"
     set_day()
-    log_temperature(temp)
     ping_ip()
     print "--------------------------------------"
     print "Is anybody home?... " + occupied
@@ -144,7 +145,7 @@ def logic():
         print "--------------------------------------"
         print "Manual Override is " + manual_override + "...."
         off()
-    elif (ch_status == 'ON') and (occupied == 'YES'):
+    elif (ch_status == 'ON'):
         manual_override='OFF'
         print "--------------------------------------"
         print "Manual Override is " + manual_override + "...."
@@ -169,4 +170,4 @@ if __name__ == "__main__":
         next_run()
         clean_up()
         time.sleep(3)
-
+        log_temperature(temp)

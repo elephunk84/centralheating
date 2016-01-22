@@ -116,12 +116,31 @@ Manual Override is -
 </h2>
 
     <?php
+    function advanced() {
+		switch ($status){
+             case '':
+                  exec ('echo ' + $on + '> ./resources/status');
+                  break;
+             case 'ON':
+                  exec ('echo ' + $off + '> ./resources/status');
+                  break;
+         }
+    }
+    if (isset($_POST['offbutton'])) { exec('echo "" > ./resources/status'); }
+    if (isset($_POST['onbutton'])) { exec('echo "ON" > ./resources/status'); }
+    $status=fgets(fopen( "resources/status", 'r'));
+    var_dump($_POST);
+    var_dump ($status); 
+    $on='"ON"';
+    $off='""';
     if (isset($_POST['advance'])){
-	    exec('sh ./webadvance.sh');
-	}
+        
+    };
     ?>
     <form action="" method="post" align="center">
-    <button type="submit" name="advance" id="submit">Advance</button>
+    <button type="submit" name="onbutton">Manual Override On</button>
+    <button type="submit" name="offbutton">Manual Override Off</button>
+    <button type="submit" name="advance">Advance</button>
     </form>
 
 
