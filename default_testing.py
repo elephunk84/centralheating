@@ -29,7 +29,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 hostname=socket.gethostname()
 now = datetime.datetime.now()
-date = now.strftime("%a-%d-%B-%Y")
+date = now.strftime("%d-%B-%Y_%a")
 templog='/home/pi/GitRepo/centralheating/resources/database/templog_' + date + '.db'
 datalog='/home/pi/GitRepo/centralheating/resources/database/datalog.db'
 __builtin__.callback = ''
