@@ -5,11 +5,11 @@ main='main'
 testing='testing'
 read version
 echo $version
-if ($version == $testing ); then 
+if [ "$version" = "$testing" ]; then 
     echo "Copying testing to main...." 
     cp default_testing.py default.py;
 fi
-if ($version == $main ); then
+if [ "$version" = "$main" ]; then
     echo "Copying main to testing...."
     cp default.py default_testing.py;
 fi
