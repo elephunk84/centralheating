@@ -144,8 +144,8 @@ def set_day():
 def run_timer():
     global timenow
     global time_now
-    global ch_off
-    global ch_off
+    global choff
+    global chon
     global ch_status
     global nexthour
     sublistcheck=''
@@ -159,6 +159,7 @@ def run_timer():
         if (sublist[1] <= timenow) and (sublist[2] > timenow):
             chon=sublist[1]
             choff=sublist[2]
+            __builtin__.chon=chon
             print "--------------------------------------"
             print "Program "+ str(sublist[0]) +" Active...."
             print "On: "+ chon, "Off: "+ choff
