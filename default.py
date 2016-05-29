@@ -4,6 +4,7 @@
 day_temp=19.999
 night_temp=23.999
 ips=['192.168.0.25', '192.168.0.26']
+relay_ip='192.168.0.130'
 
 import os
 import sys
@@ -126,9 +127,11 @@ def webadvance():
         	pass
 
 def on():
+    summer=(open('resources/summer').read())
     global call
     call="ON"
     ch_status=(open('resources/webstatus').read())
+    print "Summer Mode is " + summer
     print "Central Heating is " + ch_status + "...."
     print "--------------------------------------"
     status = ('ON') in open('resources/webstatus').read()
@@ -140,25 +143,27 @@ def on():
         f=open('resources/webstatus', 'w')
         f.write('ON')
         f.close()
-        subprocess.call(["ssh", "pi@192.168.0.129", "sh /home/pi/on.sh"])
+        subprocess.call(["ssh", "pi@192.168.0.130", "sh /home/pi/on.sh"])
         log_status_change()
 
 def off():
+    summer=(open('resources/summer').read())
     global call
     call="OFF"
     ch_status=(open('resources/webstatus').read())
+    print "Summer Mode is " + summer
     print "Central Heating is " + ch_status + "...."
     print "--------------------------------------"
     status = ('OFF') in open('resources/webstatus').read()
     if ( status == True ):
         pass
     else:
-        wiringpi.digitalWrite(0, 0)
+    	wiringpi.digitalWrite(0, 0)
         wiringpi.digitalWrite(2, 1)
         f=open('resources/webstatus', 'w')
         f.write('OFF')
         f.close()
-        subprocess.call(["ssh", "pi@192.168.0.129", "sh /home/pi/off.sh"])
+        subprocess.call(["ssh", "pi@192.168.0.130", "sh /home/pi/off.sh"])
         log_status_change()
 
 def clear_screen():
@@ -209,7 +214,7 @@ def logic():
     webadvance()
     print "--------------------------------------"
     print "Is anybody home?...." + occupied 
-    if __builtin__.chstatus == "ON" and (str(temp) <= str(set_temp)) and ( occupied == 'YES'):     
+    if __builtin__.chstatus == "ON" and (str(temp) <= str(set_temp)) and ( occupied == 'YES') and ('OFF' in open('resources/summer').read()):     
         ch_status='ON'
     else:
         ch_status='OFF'

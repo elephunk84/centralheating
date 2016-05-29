@@ -123,7 +123,18 @@ Manual Override is -
     <form action="" method="post" align="center">
     <button type="submit" name="advance" id="submit">Advance</button>
     </form>
-
+    <h2 align="center">
+    Summer Mode is - 
+    
+    <?php
+    echo file_get_contents( "./resources/summer" );
+    if (isset($_POST['summer'])){
+	    exec('sh ./summermode.sh');
+	}
+    ?>
+    <form action="" method="post" align="center">
+    <button type="submit" name="summer" id="summer">Summer Mode</button>
+    </form>
 
 </div>
 </body>
