@@ -143,7 +143,7 @@ def on():
         f=open('resources/webstatus', 'w')
         f.write('ON')
         f.close()
-        subprocess.call(["ssh", "osmc@192.168.0.130", "sh /home/osmc/on.sh"])
+        subprocess.call(["ssh", "osmc@192.168.0.130", "python /home/osmc/on.py"])
         log_status_change()
 
 def off():
