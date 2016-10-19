@@ -18,7 +18,7 @@ import datetime
 import sqlite3
 import glob
 import socket
-import wiringpi2 as wiringpi
+import wiringpi as wiringpi
 import RPi.GPIO as GPIO
 import resources.python.schedule as schedule
 from resources.python import monitor
@@ -222,6 +222,18 @@ def logic():
         manual_override='ON'
         print "Manual Override is " + manual_override + "...."
         off()
+    elif (ch_status == 'OFF') and ('ON' in open('resources/1hradvance').read()):
+	advancetime=open('resources/1hradvance').read()
+	offhour=advancetime[-6:-1]
+	manual_override='ON'
+	print "1hr Advance is " + manual_override + "...."
+        on()
+	if ( str(offhour) == str(now_today) ):
+		f=open('resources/1hradvance', 'w')
+        	f.write('')
+        	f.close()
+	else:
+		pass        
     elif (ch_status == 'ON'):
         manual_override='OFF'
         print "Manual Override is " + manual_override + "...."
@@ -242,4 +254,4 @@ if __name__ == "__main__":
         logic()
         next_run()
         time.sleep(3)
-        log_temperature(temp)
+	log_temperature(temp)

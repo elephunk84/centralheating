@@ -169,7 +169,7 @@ def run_timer():
             __builtin__.chstatus='ON'
         else:
             print "Program "+ str(sublist[0]) +" Not Active...."
-    
+    	    clearSchedule()
 
 def next_run():
     for sublist in timer: 
@@ -187,7 +187,7 @@ def next_run():
         else:
             pass
 
-def clean_up():
+def clearSchedule():
     for sublist in timer:
         if timenow in sublist[2]:
             with open('resources/run_schedule', 'w') as run, open('resources/status', 'w') as status:
@@ -198,4 +198,3 @@ def clean_up():
 if __name__ == "__main__":
     set_day()
     next_run()
-    clean_up()

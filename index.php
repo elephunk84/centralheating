@@ -102,26 +102,41 @@ Schedule Program -
 
 </br>
 </h3>
-<h2 align="center">
-Manual Override is - 
-
+    <h2 align="center">
+    1hr Adv. is -     
     <?php
-    if (filesize("resources/status") <= 1 )
-    {
-    echo "OFF";
-    }
-    echo file_get_contents( "./resources/status" );
+        if (filesize("resources/1hradvance") <= 1 )
+        {
+        echo "OFF";
+        }
+        echo file_get_contents( "./resources/1hradvance" );
+        ?>
+    </h2>
+    <form action="" method="post" align="center">
+    <button type="submit" name="1hradvance" id="submit">Advance</button>
+    </form>
+    <?php
+    if (isset($_POST['1hradvance'])){
+	    exec('sh ./1hradvance.sh');
+	}
     ?>
-
-</h2>
-
+    <h2 align="center">
+    Manual Override is - 
+    <?php
+        if (filesize("resources/status") <= 1 )
+        {
+        echo "OFF";
+        }
+        echo file_get_contents( "./resources/status" );
+        ?>
+    </h2>
     <?php
     if (isset($_POST['advance'])){
 	    exec('sh ./webadvance.sh');
 	}
     ?>
     <form action="" method="post" align="center">
-    <button type="submit" name="advance" id="submit">Advance</button>
+    <button type="submit" name="summer" id="summer">Summer Mode</button>
     </form>
     <h2 align="center">
     Summer Mode is - 
