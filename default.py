@@ -31,7 +31,7 @@ GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 hostname=socket.gethostname()
 now = datetime.datetime.now()
 date=''
-templog='/home/pi/GitRepo/centralheating/resources/database/templog_'
+templog='/home/pi/GitRepo/centralheating/resources/database/templogs/templog_'
 datalog='/home/pi/GitRepo/centralheating/resources/database/datalog.db'
 __builtin__.callback = ''
 __builtin__.chon=''
@@ -254,4 +254,4 @@ if __name__ == "__main__":
         logic()
         next_run()
         time.sleep(3)
-	log_temperature(temp)
+	#log_temperature(temp)

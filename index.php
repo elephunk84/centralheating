@@ -2,7 +2,7 @@
 
 <head>
 <meta http-equiv="refresh" content="10">
-<link rel="stylesheet" href="/resources/css/style.css">
+<link rel="stylesheet" href="http://heating.iaincstott.co.uk/resources/css/style.css">
 <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 <title>Iains Central Heating Control</title>
 </head>
@@ -16,7 +16,7 @@
 Current Temperature is - 
 
     <?php
-    echo file_get_contents( "resources/temp" );
+    echo file_get_contents( "http://heating.iaincstott.co.uk/resources/temp" );
     ?>
 
 &deg;C
@@ -26,19 +26,19 @@ Current Temperature is -
 Central Heating is -
 
     <?php
-    echo file_get_contents( "resources/webstatus" );
+    echo file_get_contents( "http://heating.iaincstott.co.uk/resources/webstatus" );
     ?>
 
 </br>
 
     <?php
-    $status=fgets(fopen( "resources/webstatus", 'r'));
+    $status=fgets(fopen( "http://heating.iaincstott.co.uk/resources/webstatus", 'r'));
     switch ($status) { 
         case "ON":
-            $image = "resources/images/GREENLED.png";
+            $image = "http://heating.iaincstott.co.uk/resources/images/GREENLED.png";
         break;
         case ($status=="OFF"):
-            $image = "resources/images/REDLED.png";
+            $image = "http://heating.iaincstott.co.uk/resources/images/REDLED.png";
         break;
         };
 
@@ -49,7 +49,7 @@ Central Heating is -
 Schedule Program - 
 
     <?php
-    $schedule=fgets(fopen( "resources/run_schedule", 'r'));
+    $schedule=fgets(fopen( "http://heating.iaincstott.co.uk/resources/run_schedule", 'r'));
     switch ($schedule) {
         case (strlen(schedule) > 1):
             $run_schedule = "ON";
@@ -70,7 +70,7 @@ Schedule Program -
         case "ON":
         break;
         case "OFF":
-            $next_run=fgets(fopen( "resources/next_run", 'r'));
+            $next_run=fgets(fopen( "http://heating.iaincstott.co.uk/http://heating.iaincstott.co.uk/resources/next_run", 'r'));
             echo "</br>Next Program - </br>";
             echo $next_run;
         break;
@@ -81,14 +81,14 @@ Schedule Program -
 <h3 align="center">
 
     <?php
-    if (filesize('resources/run_schedule') >= 1)
+    if (filesize('http://heating.iaincstott.co.uk/resources/run_schedule') >= 1)
     {
     ?>
     --------Active Program--------
     </br>
     <?php
-    $firstline = fgets(fopen("resources/run_schedule", 'r'));
-    $file = escapeshellarg("resources/run_schedule");
+    $firstline = fgets(fopen("http://heating.iaincstott.co.uk/resources/run_schedule", 'r'));
+    $file = escapeshellarg("http://heating.iaincstott.co.uk/resources/run_schedule");
     $lastline = `tail -n 1 $file`;
     ?>
     ON:- <?php echo $firstline;?>
@@ -105,11 +105,11 @@ Schedule Program -
     <h2 align="center">
     1hr Adv. is -     
     <?php
-        if (filesize("resources/1hradvance") <= 1 )
+        if (filesize("http://heating.iaincstott.co.uk/resources/1hradvance") <= 1 )
         {
         echo "OFF";
         }
-        echo file_get_contents( "./resources/1hradvance" );
+        echo file_get_contents( "./http://heating.iaincstott.co.uk/resources/1hradvance" );
         ?>
     </h2>
     <form action="" method="post" align="center">
@@ -123,11 +123,11 @@ Schedule Program -
     <h2 align="center">
     Manual Override is - 
     <?php
-        if (filesize("resources/status") <= 1 )
+        if (filesize("http://heating.iaincstott.co.uk/resources/status") <= 1 )
         {
         echo "OFF";
         }
-        echo file_get_contents( "./resources/status" );
+        echo file_get_contents( "./http://heating.iaincstott.co.uk/resources/status" );
         ?>
     </h2>
     <?php
@@ -142,7 +142,7 @@ Schedule Program -
     Summer Mode is - 
     
     <?php
-    echo file_get_contents( "./resources/summer" );
+    echo file_get_contents( "./http://heating.iaincstott.co.uk/resources/summer" );
     if (isset($_POST['summer'])){
 	    exec('sh ./summermode.sh');
 	}
